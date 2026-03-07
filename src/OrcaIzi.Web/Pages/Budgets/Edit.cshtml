@@ -1,0 +1,181 @@
+@page "{id:Guid}"
+@using OrcaIzi.Domain.Entities
+@model OrcaIzi.Web.Pages.Budgets.EditModel
+@{
+    ViewData["Title"] = "Editar Orçamento";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Editar Orçamento</h2>
+                <p class="text-muted mb-0">Atualize as informações da proposta</p>
+            </div>
+            <a asp-page="Index" class="btn btn-light rounded-pill px-4 text-muted">
+                <i class="bi bi-arrow-left me-2"></i> Voltar
+            </a>
+        </div>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            
+            <div class="row">
+                <div class="col-md-8 mb-3">
+                    <label asp-for="Budget.Title" class="form-label">Título do Orçamento</label>
+                    <input asp-for="Budget.Title" class="form-control" placeholder="Ex: Reforma da Cozinha" style="background-color: #000 !important; color: #fff !important;" />
+                    <span asp-validation-for="Budget.Title" class="text-danger"></span>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Budget.CustomerId" class="form-label">Cliente</label>
+                    <select asp-for="Budget.CustomerId" asp-items="Model.Customers" class="form-select" style="background-color: #000 !important; color: #fff !important;">
+                        <option value="">Selecione um cliente...</option>
+                    </select>
+                    <span asp-validation-for="Budget.CustomerId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Budget.Description" class="form-label">Descrição Detalhada</label>
+                <textarea asp-for="Budget.Description" class="form-control" rows="3" style="background-color: #000 !important; color: #fff !important;"></textarea>
+                <span asp-validation-for="Budget.Description" class="text-danger"></span>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label asp-for="Budget.ExpirationDate" class="form-label">Válido Até</label>
+                    <input asp-for="Budget.ExpirationDate" class="form-control" type="date" style="background-color: #000 !important; color: #fff !important;" />
+                    <span asp-validation-for="Budget.ExpirationDate" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Budget.Status" class="form-label">Status</label>
+                    <select asp-for="Budget.Status" class="form-select" style="background-color: #000 !important; color: #fff !important;">
+                        <option value="Draft">Rascunho</option>
+                        <option value="Sent">Enviado</option>
+                        <option value="Approved">Aprovado</option>
+                        <option value="Rejected">Rejeitado</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                <h4 class="mb-0">Itens do Orçamento</h4>
+                <button type="button" id="addItemBtn" class="btn btn-outline-primary btn-sm rounded-pill">
+                    <i class="bi bi-plus-lg me-2"></i> Adicionar Item
+                </button>
+            </div>
+            
+            <div id="budget-items">
+                @for (int i = 0; i < Model.Budget.Items.Count; i++)
+                {
+                    <div class="card mb-3 budget-item bg-dark border-secondary">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-end mb-2">
+                                <button type="button" class="btn-close btn-close-white remove-item" aria-label="Remover"></button>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <label class="form-label text-white">Item</label>
+                                    <input asp-for="Budget.Items[i].Name" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
+                                    <span asp-validation-for="Budget.Items[i].Name" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label class="form-label text-white">Descrição</label>
+                                    <input asp-for="Budget.Items[i].Description" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
+                                </div>
+                                <div class="col-md-2 mb-2">
+                                    <label class="form-label text-white">Qtd</label>
+                                    <input asp-for="Budget.Items[i].Quantity" class="form-control item-quantity" type="number" min="1" style="background-color: #000 !important; color: #fff !important;" />
+                                </div>
+                                <div class="col-md-2 mb-2">
+                                    <label class="form-label text-white">Valor Unit.</label>
+                                    <input asp-for="Budget.Items[i].UnitPrice" class="form-control item-price" type="number" step="0.01" style="background-color: #000 !important; color: #fff !important;" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">SALVAR ALTERAÇÕES</button>
+                <a asp-page="Index" class="btn btn-outline-secondary">CANCELAR</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Override jQuery validation methods to support comma as decimal separator
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d+)?$/.test(value) || /^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(value);
+        }
+        
+        $(document).ready(function () {
+            // Start index based on existing items if any
+            let itemIndex = @Model.Budget.Items.Count;
+
+            function addItemRow() {
+                 const template = `
+                <div class="card mb-3 budget-item bg-dark border-secondary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-end mb-2">
+                            <button type="button" class="btn-close btn-close-white remove-item" aria-label="Remover"></button>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <label class="form-label text-white">Item</label>
+                                <input name="Budget.Items[${itemIndex}].Name" class="form-control" placeholder="Nome do Item" required style="background-color: #000 !important; color: #fff !important;" />
+                                <span class="text-danger field-validation-valid" data-valmsg-for="Budget.Items[${itemIndex}].Name" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label class="form-label text-white">Descrição</label>
+                                <input name="Budget.Items[${itemIndex}].Description" class="form-control" placeholder="Descrição opcional" style="background-color: #000 !important; color: #fff !important;" />
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <label class="form-label text-white">Qtd</label>
+                                <input type="number" name="Budget.Items[${itemIndex}].Quantity" class="form-control item-quantity" value="1" min="1" required style="background-color: #000 !important; color: #fff !important;" />
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <label class="form-label text-white">Valor Unit.</label>
+                                <input type="number" step="0.01" name="Budget.Items[${itemIndex}].UnitPrice" class="form-control item-price" required style="background-color: #000 !important; color: #fff !important;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+                $('#budget-items').append(template);
+                itemIndex++;
+            }
+
+            $('#addItemBtn').click(function () {
+                addItemRow();
+            });
+
+            $(document).on('click', '.remove-item', function () {
+                $(this).closest('.budget-item').remove();
+                reindexItems();
+            });
+
+            function reindexItems() {
+                $('#budget-items .budget-item').each(function (index) {
+                    $(this).find('input').each(function () {
+                        if (this.name) {
+                            this.name = this.name.replace(/Items\[\d+\]/, `Items[${index}]`);
+                        }
+                    });
+                    $(this).find('span[data-valmsg-for]').each(function () {
+                        const name = $(this).attr('data-valmsg-for');
+                        if (name) {
+                            $(this).attr('data-valmsg-for', name.replace(/Items\[\d+\]/, `Items[${index}]`));
+                        }
+                    });
+                });
+                itemIndex = $('#budget-items .budget-item').length;
+            }
+        });
+    </script>
+}

@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "NF89JhBEayE=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\MATTEUS\\OneDrive\\Desktop\\OrcaIzi\\src\\OrcaIzi.Web\\OrcaIzi.Web.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\MATTEUS\\.nuget\\packages\\fluentvalidation\\11.11.0\\fluentvalidation.11.11.0.nupkg.sha512",
+    "C:\\Users\\MATTEUS\\.nuget\\packages\\fluentvalidation.aspnetcore\\11.3.1\\fluentvalidation.aspnetcore.11.3.1.nupkg.sha512",
+    "C:\\Users\\MATTEUS\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.11.0\\fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512"
+  ],
+  "logs": []
+}

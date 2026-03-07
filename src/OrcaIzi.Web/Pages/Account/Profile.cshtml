@@ -1,0 +1,114 @@
+@page
+@model OrcaIzi.Web.Pages.Account.ProfileModel
+@{
+    ViewData["Title"] = "Meu Perfil";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-uppercase mb-1">Meu <span class="text-gold">Perfil</span></h2>
+                <p class="text-white-50 mb-0">Gerencie suas informações e da sua empresa</p>
+            </div>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            <div class="card shadow-lg border-0 overflow-hidden mb-4">
+                <div class="card-body p-4 p-md-5">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 shadow-sm mb-4" style="color: #FF4444 !important;"></div>
+
+                    <!-- Personal Info Section -->
+                    <h5 class="fw-bold text-gold mb-4 d-flex align-items-center">
+                        <i class="bi bi-person-circle me-2"></i> INFORMAÇÕES PESSOAIS
+                    </h5>
+
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-12 text-center mb-3">
+                            <div class="position-relative d-inline-block">
+                                @if (!string.IsNullOrEmpty(Model.Input.CurrentProfilePictureUrl))
+                                {
+                                    <img src="@Model.Input.CurrentProfilePictureUrl" alt="Profile" class="rounded-circle border border-warning" style="width: 120px; height: 120px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <div class="rounded-circle bg-dark border border-secondary d-flex align-items-center justify-content-center mx-auto" style="width: 120px; height: 120px;">
+                                        <i class="bi bi-person-fill fs-1 text-muted"></i>
+                                    </div>
+                                }
+                                <label for="profileUpload" class="position-absolute bottom-0 end-0 bg-warning text-dark rounded-circle p-2 cursor-pointer shadow-sm" style="cursor: pointer;">
+                                    <i class="bi bi-camera-fill"></i>
+                                </label>
+                                <input type="file" id="profileUpload" asp-for="Input.ProfilePicture" class="d-none" accept="image/*" onchange="previewImage(this, 'profilePreview')" />
+                            </div>
+                            <p class="text-muted small mt-2">Clique no ícone para alterar a foto</p>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label asp-for="Input.FullName" class="form-label fw-bold small text-uppercase" style="color: #FFD700 !important;">Nome Completo</label>
+                            <input asp-for="Input.FullName" class="form-control form-control-lg border-secondary" placeholder="Seu nome completo" style="background-color: #000 !important; color: #fff !important;" />
+                            <span asp-validation-for="Input.FullName" class="text-danger small" style="color: #FF4444 !important;"></span>
+                        </div>
+                    </div>
+
+                    <!-- Company Info Section -->
+                    <h5 class="fw-bold text-gold mb-4 d-flex align-items-center pt-4 border-top border-secondary">
+                        <i class="bi bi-building me-2"></i> DADOS DA EMPRESA (PARA O PDF)
+                    </h5>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-12 text-center mb-3">
+                            <div class="position-relative d-inline-block">
+                                @if (!string.IsNullOrEmpty(Model.Input.CurrentCompanyLogoUrl))
+                                {
+                                    <img src="@Model.Input.CurrentCompanyLogoUrl" alt="Logo" class="rounded border border-warning" style="width: 150px; height: 80px; object-fit: contain; background-color: #fff;" />
+                                }
+                                else
+                                {
+                                    <div class="rounded bg-dark border border-secondary d-flex align-items-center justify-content-center mx-auto" style="width: 150px; height: 80px;">
+                                        <span class="text-muted small">Sem Logo</span>
+                                    </div>
+                                }
+                                <label for="logoUpload" class="btn btn-sm btn-outline-warning mt-2 w-100">
+                                    <i class="bi bi-upload me-1"></i> Carregar Logo
+                                </label>
+                                <input type="file" id="logoUpload" asp-for="Input.CompanyLogo" class="d-none" accept="image/*" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.CompanyName" class="form-label fw-bold small text-uppercase" style="color: #FFD700 !important;">Nome da Empresa</label>
+                            <input asp-for="Input.CompanyName" class="form-control border-secondary" placeholder="Ex: OrcaIzi Solutions" style="background-color: #000 !important; color: #fff !important;" />
+                            <span asp-validation-for="Input.CompanyName" class="text-danger small" style="color: #FF4444 !important;"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.Cnpj" class="form-label fw-bold small text-uppercase" style="color: #FFD700 !important;">CNPJ</label>
+                            <input asp-for="Input.Cnpj" class="form-control border-secondary" placeholder="00.000.000/0000-00" style="background-color: #000 !important; color: #fff !important;" />
+                            <span asp-validation-for="Input.Cnpj" class="text-danger small" style="color: #FF4444 !important;"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Input.CompanyAddress" class="form-label fw-bold small text-uppercase" style="color: #FFD700 !important;">Endereço Comercial</label>
+                            <input asp-for="Input.CompanyAddress" class="form-control border-secondary" placeholder="Rua, Número, Bairro, Cidade - UF" style="background-color: #000 !important; color: #fff !important;" />
+                            <span asp-validation-for="Input.CompanyAddress" class="text-danger small" style="color: #FF4444 !important;"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 pt-4">
+                        <button type="submit" class="btn btn-warning btn-lg fw-bold text-dark text-uppercase">
+                            SALVAR ALTERAÇÕES
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Simple preview logic if needed later
+    </script>
+}

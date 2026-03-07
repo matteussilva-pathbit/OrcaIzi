@@ -1,0 +1,256 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+    // Enable full width layout for this page to handle Hero section
+    ViewData["FullWidth"] = true;
+}
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content fade-in-up">
+            <h1 class="hero-title">DOMINE SEUS <span class="text-gold">ORÇAMENTOS</span></h1>
+            <p class="hero-subtitle">PROFISSIONALISMO, VELOCIDADE E IMPACTO. O SISTEMA DEFINITIVO PARA QUEM NÃO TEM TEMPO A PERDER.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/Account/Register" class="btn btn-primary btn-lg">COMEÇAR AGORA</a>
+                <a href="/Account/Login" class="btn btn-outline-primary btn-lg">LOGIN</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Highlights Section -->
+    <div class="section" style="background-color: #050505;">
+        <div class="container">
+            <h2 class="section-title text-uppercase">Destaques do Sistema</h2>
+            <div class="row g-4 mb-5">
+                <div class="col-md-6 fade-in-up">
+                    <div class="card bg-dark text-white border-0 overflow-hidden h-100 position-relative" style="min-height: 400px; background: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop') center/cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);">
+                            <h3 class="text-gold mb-2">ANÁLISE EM TEMPO REAL</h3>
+                            <p class="mb-0 text-white-50">Dashboards poderosos que mostram exatamente onde seu negócio está e para onde ele vai.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 fade-in-up delay-100">
+                    <div class="card bg-dark text-white border-0 overflow-hidden h-100 position-relative" style="min-height: 400px; background: url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop') center/cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);">
+                            <h3 class="text-gold mb-2">GESTÃO DE ELITE</h3>
+                            <p class="mb-0 text-white-50">Controle total sobre seus clientes e propostas com uma interface desenhada para alta performance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="section" style="background-color: #0a0a0a;">
+        <div class="container">
+            <h2 class="section-title text-uppercase">Recursos Principais</h2>
+            <div class="row g-4">
+                <div class="col-md-4 fade-in-up">
+                    <div class="feature-card">
+                        <i class="bi bi-lightning-charge feature-icon"></i>
+                        <h4>VELOCIDADE EXTREMA</h4>
+                        <p>Crie propostas complexas em segundos. Otimizado para não desperdiçar seu tempo.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 fade-in-up delay-100">
+                    <div class="feature-card">
+                        <i class="bi bi-file-earmark-pdf feature-icon"></i>
+                        <h4>PDF PREMIUM</h4>
+                        <p>Gere documentos que impressionam. Layouts limpos, modernos e profissionais.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 fade-in-up delay-200">
+                    <div class="feature-card">
+                        <i class="bi bi-shield-lock feature-icon"></i>
+                        <h4>SEGURANÇA TOTAL</h4>
+                        <p>Seus dados protegidos com criptografia de ponta a ponta. Foco total no seu negócio.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="section text-center" style="background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop') center/cover fixed;">
+        <div class="container py-5">
+            <h2 class="hero-title mb-4 fade-in-up">PRONTO PARA A <span class="text-gold">EVOLUÇÃO?</span></h2>
+            <p class="lead text-white mb-5 fade-in-up delay-100">Junte-se a milhares de profissionais que elevaram o nível de seus orçamentos.</p>
+            <a href="/Account/Register" class="btn btn-primary btn-lg px-5 py-3 fade-in-up delay-200">CRIAR CONTA GRATUITA</a>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Authenticated Dashboard -->
+    <div class="container mt-5 pt-5">
+        <div class="mb-5 d-flex justify-content-between align-items-end fade-in-up">
+            <div>
+                <h2 class="fw-bold text-uppercase mb-1">Dashboard <span class="text-gold">Principal</span></h2>
+                <p class="text-white mb-0">Visão geral do seu império</p>
+            </div>
+            <div class="text-muted small">
+                <i class="bi bi-calendar3 me-1 text-gold"></i> @DateTime.Now.ToString("dd 'de' MMMM 'de' yyyy").ToUpper()
+            </div>
+        </div>
+
+        @if (Model.DashboardStats != null)
+        {
+            <div class="row mb-5 g-4 fade-in-up delay-100">
+                <div class="col-md-3">
+                    <div class="stat-card bg-dark border border-secondary shadow-lg p-4 rounded-3 h-100 position-relative overflow-hidden">
+                        <div class="d-flex justify-content-between align-items-start position-relative z-2">
+                            <div>
+                                <p class="mb-1 text-muted small text-uppercase fw-bold">Total Orçamentos</p>
+                                <h2 class="fw-bold mb-0 text-white">@Model.DashboardStats.TotalBudgets</h2>
+                            </div>
+                            <div class="text-gold opacity-50">
+                                <i class="bi bi-file-text fs-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card bg-dark border border-secondary shadow-lg p-4 rounded-3 h-100 position-relative overflow-hidden">
+                        <div class="d-flex justify-content-between align-items-start position-relative z-2">
+                            <div>
+                                <p class="mb-1 text-muted small text-uppercase fw-bold">Pendentes</p>
+                                <h2 class="fw-bold mb-0 text-warning">@Model.DashboardStats.PendingBudgets</h2>
+                            </div>
+                            <div class="text-warning opacity-50">
+                                <i class="bi bi-clock-history fs-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card bg-dark border border-secondary shadow-lg p-4 rounded-3 h-100 position-relative overflow-hidden">
+                        <div class="d-flex justify-content-between align-items-start position-relative z-2">
+                            <div>
+                                <p class="mb-1 text-muted small text-uppercase fw-bold">Aprovados</p>
+                                <h2 class="fw-bold mb-0 text-success">@Model.DashboardStats.ApprovedBudgets</h2>
+                            </div>
+                            <div class="text-success opacity-50">
+                                <i class="bi bi-check-circle fs-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card bg-dark border border-secondary shadow-lg p-4 rounded-3 h-100 position-relative overflow-hidden">
+                        <div class="d-flex justify-content-between align-items-start position-relative z-2">
+                            <div>
+                                <p class="mb-1 text-muted small text-uppercase fw-bold">Receita Aprovada</p>
+                                <h3 class="fw-bold mb-0 text-gold">@Model.DashboardStats.TotalRevenue.ToString("C2")</h3>
+                            </div>
+                            <div class="text-gold opacity-50">
+                                <i class="bi bi-currency-dollar fs-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 fade-in-up delay-200">
+                <div class="col-md-8">
+                    <div class="card bg-dark border-secondary h-100">
+                        <div class="card-header border-secondary">
+                            <h5 class="mb-0 text-uppercase text-white">Ações Rápidas</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <a asp-page="/Budgets/Create" class="btn btn-outline-primary w-100 h-100 p-4 d-flex flex-column align-items-center justify-content-center gap-3">
+                                        <i class="bi bi-plus-circle fs-1"></i>
+                                        <span>NOVO ORÇAMENTO</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a asp-page="/Customers/Create" class="btn btn-outline-primary w-100 h-100 p-4 d-flex flex-column align-items-center justify-content-center gap-3">
+                                        <i class="bi bi-person-plus fs-1"></i>
+                                        <span>NOVO CLIENTE</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a asp-page="/Budgets/Index" class="btn btn-outline-light w-100 h-100 p-4 d-flex flex-column align-items-center justify-content-center gap-3 text-muted border-secondary hover-gold">
+                                        <i class="bi bi-list-ul fs-1"></i>
+                                        <span>VER TODOS</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-dark border-secondary h-100">
+                        <div class="card-header border-secondary">
+                            <h5 class="mb-0 text-uppercase text-white">Status</h5>
+                        </div>
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <canvas id="statusChart" style="max-height: 220px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @section Scripts {
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const ctx = document.getElementById('statusChart').getContext('2d');
+                        const data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.DashboardStats.BudgetsByStatus));
+                        
+                        const labels = data.map(d => d.Status);
+                        const counts = data.map(d => d.Count);
+                        
+                        // Rockstar Palette
+                        const colors = labels.map(status => {
+                            if (status === 'Approved') return '#22C55E'; // Success Green
+                            if (status === 'Pending') return '#FFD700'; // Gold
+                            if (status === 'Rejected') return '#EF4444'; // Red
+                            return '#64748B'; // Grey
+                        });
+
+                        new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    data: counts,
+                                    backgroundColor: colors,
+                                    borderColor: '#111111',
+                                    borderWidth: 2,
+                                    hoverOffset: 10
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            color: '#FFFFFF',
+                                            usePointStyle: true,
+                                            padding: 20,
+                                            font: {
+                                                family: "'Oswald', sans-serif",
+                                                size: 14
+                                            }
+                                        }
+                                    }
+                                },
+                                cutout: '70%'
+                            }
+                        });
+                    });
+                </script>
+            }
+        }
+    </div>
+}

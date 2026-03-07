@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OrcaIzi.Application/OrcaIzi.Application.csproj" />
+    <Project Path="src/OrcaIzi.Domain/OrcaIzi.Domain.csproj" />
+    <Project Path="src/OrcaIzi.Infrastructure/OrcaIzi.Infrastructure.csproj" />
+    <Project Path="src/OrcaIzi.IntegrationTests/OrcaIzi.IntegrationTests.csproj" />
+    <Project Path="src/OrcaIzi.Tests/OrcaIzi.Tests.csproj" />
+    <Project Path="src/OrcaIzi.Web/OrcaIzi.Web.csproj" />
+    <Project Path="src/OrcaIzi.WebAPI/OrcaIzi.WebAPI.csproj" />
+  </Folder>
+</Solution>

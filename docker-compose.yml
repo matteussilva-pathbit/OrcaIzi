@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: orcaizi-sql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Admin#1234
+    ports:
+      - "1433:1433"
+    volumes:
+      - orcaizi-sql-data:/var/opt/mssql
+
+volumes:
+  orcaizi-sql-data:

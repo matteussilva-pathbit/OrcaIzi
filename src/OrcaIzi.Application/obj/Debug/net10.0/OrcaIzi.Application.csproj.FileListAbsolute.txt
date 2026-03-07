@@ -1,0 +1,15 @@
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\bin\Debug\net10.0\OrcaIzi.Application.deps.json
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\bin\Debug\net10.0\OrcaIzi.Application.dll
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\bin\Debug\net10.0\OrcaIzi.Application.pdb
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\bin\Debug\net10.0\OrcaIzi.Domain.dll
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\bin\Debug\net10.0\OrcaIzi.Domain.pdb
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\obj\Debug\net10.0\OrcaIzi.Application.csproj.AssemblyReference.cache
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\obj\Debug\net10.0\OrcaIzi.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\obj\Debug\net10.0\OrcaIzi.Application.AssemblyInfoInputs.cache
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\obj\Debug\net10.0\OrcaIzi.Application.AssemblyInfo.cs
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\obj\Debug\net10.0\OrcaIzi.Application.csproj.CoreCompileInputs.cache
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\obj\Debug\net10.0\OrcaIzi..CFC56946.Up2Date
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\obj\Debug\net10.0\OrcaIzi.Application.dll
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\obj\Debug\net10.0\refint\OrcaIzi.Application.dll
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\obj\Debug\net10.0\OrcaIzi.Application.pdb
+C:\Users\MATTEUS\OneDrive\Desktop\OrcaIzi\src\OrcaIzi.Application\obj\Debug\net10.0\ref\OrcaIzi.Application.dll

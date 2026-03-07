@@ -1,0 +1,75 @@
+@page
+@model OrcaIzi.Web.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Registrar";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg border-0 overflow-hidden animate-fade-in">
+            <div class="card-body p-5">
+                <div class="text-center mb-5">
+                    <img src="~/images/logo.png" alt="OrcaIzi" class="mb-4" style="height: 160px; width: auto;" />
+                    <h2 class="fw-bold" style="color: #FFD700 !important;">Comece Grátis</h2>
+                    <p class="text-white-50">Crie orçamentos profissionais em segundos</p>
+                </div>
+
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" style="color: #FF4444 !important;"></div>
+                    
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email" class="form-control" placeholder="name@example.com" style="background-color: #000 !important; color: #fff !important;" />
+                        <label asp-for="Input.Email" class="text-muted">Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger small" style="color: #FF4444 !important;"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Username" class="form-control" placeholder="Usuário" style="background-color: #000 !important; color: #fff !important;" />
+                        <label asp-for="Input.Username" class="text-muted">Usuário</label>
+                        <span asp-validation-for="Input.Username" class="text-danger small" style="color: #FF4444 !important;"></span>
+                    </div>
+                    
+                    <div class="row g-2 mb-4">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Input.Password" class="form-control" type="password" placeholder="Senha" style="background-color: #000 !important; color: #fff !important;" />
+                                <label asp-for="Input.Password" class="text-muted">Senha</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Input.ConfirmPassword" class="form-control" type="password" placeholder="Confirme" style="background-color: #000 !important; color: #fff !important;" />
+                                <label asp-for="Input.ConfirmPassword" class="text-muted">Confirme</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <span asp-validation-for="Input.Password" class="text-danger small d-block" style="color: #FF4444 !important;"></span>
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger small d-block" style="color: #FF4444 !important;"></span>
+                            <div class="form-text small mt-2" style="color: #FF4444 !important;">
+                                <i class="bi bi-shield-lock me-1"></i>
+                                Mínimo 6 caracteres, maiúscula, minúscula, número e símbolo.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            CRIAR MINHA CONTA
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-4 text-center">
+                    <p class="text-muted mb-0">
+                        Já tem uma conta? 
+                        <a asp-page="Login" class="fw-bold text-decoration-none" style="color: #FFD700 !important;">Faça login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,52 @@
+@page
+@model OrcaIzi.Web.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-5">
+        <div class="card shadow-lg border-0 overflow-hidden animate-fade-in">
+            <div class="card-body p-5">
+                <div class="text-center mb-5">
+                    <img src="~/images/logo.png" alt="OrcaIzi" class="mb-4" style="height: 160px; width: auto;" />
+                    <h2 class="fw-bold">Bem-vindo de volta</h2>
+                    <p class="text-muted">Entre para gerenciar seus orçamentos</p>
+                </div>
+
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Username" class="form-control" placeholder="Usuário" />
+                        <label asp-for="Input.Username">Usuário</label>
+                        <span asp-validation-for="Input.Username" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="form-floating mb-4">
+                        <input asp-for="Input.Password" class="form-control" type="password" placeholder="Senha" />
+                        <label asp-for="Input.Password">Senha</label>
+                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                            Entrar na Plataforma
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-4 text-center">
+                    <p class="text-muted mb-0">
+                        Não tem uma conta? 
+                        <a asp-page="Register" class="text-primary fw-semibold text-decoration-none">Crie agora</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

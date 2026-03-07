@@ -1,0 +1,73 @@
+@page
+@model OrcaIzi.Web.Pages.Customers.CreateModel
+@{
+    ViewData["Title"] = "Novo Cliente";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0">Novo Cliente</h2>
+            <a asp-page="Index" class="btn btn-light rounded-pill px-3 text-muted">
+                <i class="bi bi-x-lg"></i>
+            </a>
+        </div>
+
+        <div class="card shadow-lg border-0 overflow-hidden">
+            <div class="card-body p-5">
+                <form method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Customer.Name" class="form-label text-white">Nome Completo</label>
+                            <input asp-for="Customer.Name" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
+                            <span asp-validation-for="Customer.Name" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Customer.Email" class="form-label text-white">E-mail</label>
+                            <input asp-for="Customer.Email" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
+                            <span asp-validation-for="Customer.Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Customer.Phone" class="form-label text-white">Telefone</label>
+                            <input asp-for="Customer.Phone" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
+                            <span asp-validation-for="Customer.Phone" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Customer.Document" class="form-label text-white">CPF/CNPJ</label>
+                            <input asp-for="Customer.Document" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
+                            <span asp-validation-for="Customer.Document" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Customer.Address" class="form-label text-white">Endereço</label>
+                        <input asp-for="Customer.Address" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
+                        <span asp-validation-for="Customer.Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ProfilePicture" class="form-label text-white">Foto do Cliente</label>
+                        <input asp-for="ProfilePicture" class="form-control" type="file" style="background-color: #000 !important; color: #fff !important;" />
+                        <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">SALVAR CLIENTE</button>
+                        <a asp-page="Index" class="btn btn-outline-secondary">CANCELAR</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
