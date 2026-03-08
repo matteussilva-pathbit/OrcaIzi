@@ -258,5 +258,38 @@ namespace OrcaIzi.Web.Services
             var response = await _httpClient.PutAsJsonAsync("api/Auth/profile", profileDto);
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<CepResultDto?> ConsultarCepAsync(string cep)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.GetAsync($"api/External/cep/{cep}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<CepResultDto>(new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            }
+            return null;
+        }
+
+        public async Task<CnpjResultDto?> ConsultarCnpjAsync(string cnpj)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.GetAsync($"api/External/cnpj/{cnpj}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<CnpjResultDto>(new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            }
+            return null;
+        }
+
+        public async Task<CpfResultDto?> ConsultarCpfAsync(string cpf)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.GetAsync($"api/External/cpf/{cpf}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<CpfResultDto>(new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            }
+            return null;
+        }
     }
 }

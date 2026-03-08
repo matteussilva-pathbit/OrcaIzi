@@ -10,6 +10,8 @@ using Microsoft.OpenApi.Models;
 using OrcaIzi.WebAPI.Middleware;
 using FluentValidation.AspNetCore;
 using Serilog;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,20 @@ builder.Host.UseSerilog();
 // Add services from other layers
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
+
+// Caching
+builder.Services.AddMemoryCache();
+
+// Rate Limiting
+builder.Services.AddRateLimiter(options => {
+    options.AddFixedWindowLimiter(policyName: "fixed", opt => {
+        opt.PermitLimit = 10;
+        opt.Window = TimeSpan.FromSeconds(10);
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 2;
+    });
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
 
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation();
@@ -108,6 +124,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRateLimiter(); // Add Rate Limiter Middleware
 
 app.MapControllers();
 

@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\OrcaIzi.Domain\OrcaIzi.Domain.csproj" />
     <ProjectReference Include="..\OrcaIzi.Application\OrcaIzi.Application.csproj" />
+    <ProjectReference Include="..\OrcaIzi.Infrastructure\OrcaIzi.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

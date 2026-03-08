@@ -31,5 +31,10 @@ namespace OrcaIzi.Web.Interfaces
         // Profile Operations
         Task<UserDto?> GetProfileAsync();
         Task<bool> UpdateProfileAsync(UpdateProfileDto profileDto);
+
+        // External Operations
+        Task<CepResultDto?> ConsultarCepAsync(string cep);
+        Task<CnpjResultDto?> ConsultarCnpjAsync(string cnpj);
+        Task<CpfResultDto?> ConsultarCpfAsync(string cpf);
     }
 }

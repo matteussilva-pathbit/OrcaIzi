@@ -1,0 +1,198 @@
+@page
+@model OrcaIzi.Web.Pages.Tools.IndexModel
+@{
+    ViewData["Title"] = "Ferramentas de Consulta";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-12 text-center">
+            <h1 class="fw-bold mb-3"><i class="bi bi-tools me-2"></i>Ferramentas de Consulta</h1>
+            <p class="text-muted">Consulte dados de CNPJ, CEP e Validação de CPF de forma rápida e segura.</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <select class="form-select form-select-lg" name="SearchType" asp-for="SearchType" onchange="updatePlaceholder()">
+                                <option value="CNPJ">CNPJ</option>
+                                <option value="CEP">CEP</option>
+                                <option value="CPF">CPF</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control form-control-lg" name="SearchValue" asp-for="SearchValue" id="searchInput" placeholder="Digite o CNPJ..." required>
+                        </div>
+                        <div class="col-md-2 d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.SearchHistory != null && Model.SearchHistory.Any())
+    {
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-8">
+                <h6 class="text-muted text-uppercase fw-bold mb-3 small"><i class="bi bi-clock-history me-2"></i>Histórico Recente</h6>
+                <div class="list-group shadow-sm">
+                    @foreach (var item in Model.SearchHistory)
+                    {
+                        <a href="?SearchType=@item.Type&SearchValue=@item.Value" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-secondary me-2">@item.Type</span>
+                                <span class="fw-medium">@item.Value</span>
+                                <small class="text-muted ms-2">@item.Description</small>
+                            </div>
+                            <small class="text-muted">@item.Date.ToShortTimeString()</small>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger text-center shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @Model.ErrorMessage
+        </div>
+    }
+
+    @if (Model.CnpjResult != null)
+    {
+        <div class="card shadow border-0 animate-fade-in mb-5">
+            <div class="card-header bg-dark text-white py-3">
+                <h5 class="mb-0"><i class="bi bi-building me-2"></i>Dados da Empresa</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <h3 class="fw-bold text-primary">@Model.CnpjResult.Razao_Social</h3>
+                        <p class="text-muted mb-4">@Model.CnpjResult.Nome_Fantasia</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small">CNPJ</label>
+                        <p class="fw-medium">@Model.CnpjResult.Cnpj</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small">Situação Cadastral</label>
+                        <p class="fw-medium">@Model.CnpjResult.Situacao_Cadastral</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small">Data Abertura</label>
+                        <p class="fw-medium">@Model.CnpjResult.Data_Inicio_Atividade</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Atividade Principal</label>
+                        <p class="fw-medium">@Model.CnpjResult.Cnae_Fiscal_Descricao</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Contato</label>
+                        <p class="fw-medium">@Model.CnpjResult.Email <br> @Model.CnpjResult.Ddd_Telefone_1</p>
+                    </div>
+                    <div class="col-12">
+                        <hr>
+                        <h6 class="fw-bold mb-3"><i class="bi bi-geo-alt me-2"></i>Endereço</h6>
+                        <p class="mb-0">
+                            @Model.CnpjResult.Logradouro, @Model.CnpjResult.Numero @Model.CnpjResult.Complemento <br>
+                            @Model.CnpjResult.Bairro - @Model.CnpjResult.Municipio / @Model.CnpjResult.Uf <br>
+                            CEP: @Model.CnpjResult.Cep
+                        </p>
+                    </div>
+                    @if (Model.CnpjResult.Qsa != null && Model.CnpjResult.Qsa.Any())
+                    {
+                        <div class="col-12 mt-4">
+                            <h6 class="fw-bold mb-3"><i class="bi bi-people me-2"></i>Sócios</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>Qualificação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var socio in Model.CnpjResult.Qsa)
+                                        {
+                                            <tr>
+                                                <td>@socio.Nome_Socio</td>
+                                                <td>@socio.Qualificacao_Socio</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.CepResult != null && !Model.CepResult.Erro)
+    {
+        <div class="card shadow border-0 animate-fade-in mb-5" style="max-width: 600px; margin: 0 auto;">
+            <div class="card-header bg-info text-white py-3">
+                <h5 class="mb-0"><i class="bi bi-map me-2"></i>Endereço Encontrado</h5>
+            </div>
+            <div class="card-body p-4 text-center">
+                <h3 class="fw-bold mb-1">@Model.CepResult.Logradouro</h3>
+                <p class="text-muted mb-4">@Model.CepResult.Bairro</p>
+                <div class="display-6 mb-4 text-primary">@Model.CepResult.Localidade / @Model.CepResult.Uf</div>
+                <span class="badge bg-secondary fs-5">CEP: @Model.CepResult.Cep</span>
+            </div>
+        </div>
+    }
+
+    @if (Model.CpfResult != null)
+    {
+        <div class="card shadow border-0 animate-fade-in mb-5" style="max-width: 500px; margin: 0 auto;">
+            <div class="card-header @(Model.CpfResult.Valido ? "bg-success" : "bg-danger") text-white py-3">
+                <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Validação de CPF</h5>
+            </div>
+            <div class="card-body p-5 text-center">
+                @if (Model.CpfResult.Valido)
+                {
+                    <div class="mb-4 text-success">
+                        <i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i>
+                    </div>
+                    <h3 class="fw-bold text-success mb-3">CPF Válido</h3>
+                    <p class="fs-4 mb-4">@Model.CpfResult.CpfFormatado</p>
+                    <div class="alert alert-light border">
+                        <small class="text-muted d-block text-uppercase fw-bold mb-1">Região Fiscal</small>
+                        @Model.CpfResult.RegiaoFiscal
+                    </div>
+                }
+                else
+                {
+                    <div class="mb-4 text-danger">
+                        <i class="bi bi-x-circle-fill" style="font-size: 4rem;"></i>
+                    </div>
+                    <h3 class="fw-bold text-danger mb-3">CPF Inválido</h3>
+                    <p class="text-muted">O número informado não é um CPF válido.</p>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function updatePlaceholder() {
+            var type = document.getElementsByName("SearchType")[0].value;
+            var input = document.getElementById("searchInput");
+            if (type === "CNPJ") input.placeholder = "Digite o CNPJ...";
+            else if (type === "CEP") input.placeholder = "Digite o CEP...";
+            else if (type === "CPF") input.placeholder = "Digite o CPF...";
+            input.value = "";
+            input.focus();
+        }
+    </script>
+}

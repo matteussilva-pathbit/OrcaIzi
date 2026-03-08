@@ -101,7 +101,7 @@ namespace OrcaIzi.Tests.Application
 
             // Assert
             await act.Should().ThrowAsync<Exception>()
-                .WithMessage("*don't have permission*");
+            .WithMessage("Cliente não encontrado ou você não tem permissão.");
         }
     }
 }

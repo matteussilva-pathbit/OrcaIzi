@@ -61,5 +61,23 @@ namespace OrcaIzi.Web.Pages.Customers
             TempData["Success"] = "Cliente criado com sucesso!";
             return RedirectToPage("Index");
         }
+
+        public async Task<IActionResult> OnGetConsultarCnpjAsync(string cnpj)
+        {
+            var result = await _apiService.ConsultarCnpjAsync(cnpj);
+            return new JsonResult(result);
+        }
+
+        public async Task<IActionResult> OnGetConsultarCpfAsync(string cpf)
+        {
+            var result = await _apiService.ConsultarCpfAsync(cpf);
+            return new JsonResult(result);
+        }
+
+        public async Task<IActionResult> OnGetConsultarCepAsync(string cep)
+        {
+            var result = await _apiService.ConsultarCepAsync(cep);
+            return new JsonResult(result);
+        }
     }
 }
