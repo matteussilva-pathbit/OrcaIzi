@@ -58,6 +58,12 @@ namespace OrcaIzi.Web.Services
             return null;
         }
 
+        public async Task<bool> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/Auth/forgot-password", forgotPasswordDto);
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<string?> GetTokenAsync()
         {
             return await Task.FromResult(_httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"]); 

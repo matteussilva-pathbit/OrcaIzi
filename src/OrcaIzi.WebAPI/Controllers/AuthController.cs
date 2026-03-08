@@ -75,6 +75,27 @@ namespace OrcaIzi.WebAPI.Controllers
             return Ok(new { Message = $"User {user.Email} added to role {roleName}" });
         }
 
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
+        {
+            var user = await _userManager.FindByEmailAsync(forgotPasswordDto.Email);
+            if (user == null)
+            {
+                // To prevent email enumeration, we return Ok even if user doesn't exist.
+                return Ok(new { Message = "Se o e-mail existir, um link de recuperação será enviado." });
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            
+            // In a real scenario, we would send an email here.
+            // Since we don't have an email service, we'll just log/return it for now (simulated).
+            // For development purposes, we might want to see the token, but let's stick to the message.
+            
+            // TODO: Integrate Email Service
+            
+            return Ok(new { Message = "Se o e-mail existir, um link de recuperação será enviado.", DebugToken = token });
+        }
+
         private string GenerateJwtToken(User user)
         {
             var claims = new List<Claim>

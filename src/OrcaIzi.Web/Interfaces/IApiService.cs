@@ -7,6 +7,7 @@ namespace OrcaIzi.Web.Interfaces
     {
         Task<UserDto?> LoginAsync(LoginDto loginDto);
         Task<UserDto?> RegisterAsync(RegisterDto registerDto);
+        Task<bool> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto);
         Task<string?> GetTokenAsync();
         void Logout();
 
