@@ -183,6 +183,47 @@ namespace OrcaIzi.Infrastructure.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("PaymentCreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentExternalId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PaymentLink")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("PaymentProvider")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PaymentQrCode")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("PaymentQrCodeBase64")
+                        .HasMaxLength(8000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentStatus")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("PublicShareCreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("PublicShareEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid?>("PublicShareId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -225,7 +266,6 @@ namespace OrcaIzi.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -251,6 +291,82 @@ namespace OrcaIzi.Infrastructure.Migrations
                     b.HasIndex("BudgetId");
 
                     b.ToTable("BudgetItems", (string)null);
+                });
+
+            modelBuilder.Entity("OrcaIzi.Domain.Entities.BudgetTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Observations")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BudgetTemplates", (string)null);
+                });
+
+            modelBuilder.Entity("OrcaIzi.Domain.Entities.BudgetTemplateItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BudgetTemplateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BudgetTemplateId");
+
+                    b.ToTable("BudgetTemplateItems", (string)null);
                 });
 
             modelBuilder.Entity("OrcaIzi.Domain.Entities.Customer", b =>
@@ -312,6 +428,9 @@ namespace OrcaIzi.Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Cnpj")
                         .HasColumnType("nvarchar(max)");
 
@@ -322,6 +441,9 @@ namespace OrcaIzi.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CompanyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Complement")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -344,6 +466,9 @@ namespace OrcaIzi.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("Neighborhood")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -351,6 +476,9 @@ namespace OrcaIzi.Infrastructure.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Number")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -367,12 +495,21 @@ namespace OrcaIzi.Infrastructure.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("ZipCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -468,6 +605,28 @@ namespace OrcaIzi.Infrastructure.Migrations
                     b.Navigation("Budget");
                 });
 
+            modelBuilder.Entity("OrcaIzi.Domain.Entities.BudgetTemplate", b =>
+                {
+                    b.HasOne("OrcaIzi.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OrcaIzi.Domain.Entities.BudgetTemplateItem", b =>
+                {
+                    b.HasOne("OrcaIzi.Domain.Entities.BudgetTemplate", "BudgetTemplate")
+                        .WithMany("Items")
+                        .HasForeignKey("BudgetTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BudgetTemplate");
+                });
+
             modelBuilder.Entity("OrcaIzi.Domain.Entities.Customer", b =>
                 {
                     b.HasOne("OrcaIzi.Domain.Entities.User", "User")
@@ -480,6 +639,11 @@ namespace OrcaIzi.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("OrcaIzi.Domain.Entities.Budget", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("OrcaIzi.Domain.Entities.BudgetTemplate", b =>
                 {
                     b.Navigation("Items");
                 });

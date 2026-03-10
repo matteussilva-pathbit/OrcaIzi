@@ -23,6 +23,9 @@ namespace OrcaIzi.Web.Pages.Customers
         public CreateCustomerDto Customer { get; set; } = new();
 
         [BindProperty]
+        public string? ZipCode { get; set; }
+
+        [BindProperty]
         [Display(Name = "Foto do Cliente")]
         public IFormFile? ProfilePicture { get; set; }
 

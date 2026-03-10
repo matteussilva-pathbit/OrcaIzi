@@ -36,6 +36,16 @@ namespace OrcaIzi.Web.Pages.Account
             [Display(Name = "Confirmar senha")]
             [Compare("Password", ErrorMessage = "As senhas não conferem.")]
             public string ConfirmPassword { get; set; } = string.Empty;
+
+            [Required(ErrorMessage = "O CEP é obrigatório")]
+            public string ZipCode { get; set; } = string.Empty;
+
+            public string? Street { get; set; }
+            public string? Number { get; set; }
+            public string? Complement { get; set; }
+            public string? Neighborhood { get; set; }
+            public string? City { get; set; }
+            public string? State { get; set; }
         }
 
         public void OnGet()
@@ -53,7 +63,14 @@ namespace OrcaIzi.Web.Pages.Account
             {
                 Email = Input.Email,
                 Username = Input.Username,
-                Password = Input.Password
+                Password = Input.Password,
+                ZipCode = Input.ZipCode,
+                Street = Input.Street,
+                Number = Input.Number,
+                Complement = Input.Complement,
+                Neighborhood = Input.Neighborhood,
+                City = Input.City,
+                State = Input.State
             };
 
             var user = await _apiService.RegisterAsync(registerDto);
@@ -69,7 +86,8 @@ namespace OrcaIzi.Web.Pages.Account
                     Expires = DateTime.UtcNow.AddDays(1)
                 });
 
-                return RedirectToPage("/Index");
+                ViewData["AccountCreated"] = true;
+                return Page();
             }
 
             ModelState.AddModelError(string.Empty, "Falha ao registrar. Verifique os dados e tente novamente.");

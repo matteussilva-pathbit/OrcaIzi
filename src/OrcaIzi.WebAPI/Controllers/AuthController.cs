@@ -21,28 +21,57 @@ namespace OrcaIzi.WebAPI.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
+        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, ILogger<AuthController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto registerDto)
         {
-            var user = new User { UserName = registerDto.Username, Email = registerDto.Email };
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
-
-            if (!result.Succeeded)
+            try
             {
-                return BadRequest(result.Errors);
-            }
+                var user = new User 
+                { 
+                    UserName = registerDto.Username, 
+                    Email = registerDto.Email,
+                    ZipCode = registerDto.ZipCode,
+                    Street = registerDto.Street,
+                    Number = registerDto.Number,
+                    Complement = registerDto.Complement,
+                    Neighborhood = registerDto.Neighborhood,
+                    City = registerDto.City,
+                    State = registerDto.State,
+                    // Combine address parts for simple display if needed
+                    CompanyAddress = $"{registerDto.Street}, {registerDto.Number} - {registerDto.Neighborhood}, {registerDto.City} - {registerDto.State}"
+                };
+                
+                _logger.LogInformation("Attempting to register user: {Username}, Email: {Email}", registerDto.Username, registerDto.Email);
 
-            // Return UserDto with Token (Auto-login after register)
-            var token = GenerateJwtToken(user);
-            return Ok(new UserDto { Username = user.UserName ?? "", Email = user.Email ?? "", Token = token });
+                var result = await _userManager.CreateAsync(user, registerDto.Password);
+
+                if (!result.Succeeded)
+                {
+                    _logger.LogWarning("User registration failed for {Username}. Errors: {Errors}", registerDto.Username, string.Join(", ", result.Errors.Select(e => e.Description)));
+                    return BadRequest(result.Errors);
+                }
+
+                _logger.LogInformation("User registered successfully: {Username}", registerDto.Username);
+
+                // Return UserDto with Token (Auto-login after register)
+                var token = GenerateJwtToken(user);
+                return Ok(new UserDto { Username = user.UserName ?? "", Email = user.Email ?? "", Token = token });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error during registration for user {Username}", registerDto.Username);
+                return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
+            }
         }
 
         [HttpPost("login")]

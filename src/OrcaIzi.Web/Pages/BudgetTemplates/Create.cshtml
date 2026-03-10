@@ -1,0 +1,170 @@
+@page
+@model OrcaIzi.Web.Pages.BudgetTemplates.CreateModel
+@{
+    ViewData["Title"] = "Novo Template";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Novo Template</h2>
+                <p class="text-muted mb-0">Crie um modelo para reutilizar em novos orçamentos</p>
+            </div>
+            <a asp-page="Index" class="btn btn-light rounded-pill px-4 text-muted">
+                <i class="bi bi-arrow-left me-2"></i> Voltar
+            </a>
+        </div>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <div class="col-md-8 mb-3">
+                    <label asp-for="Template.Name" class="form-label">Nome</label>
+                    <input asp-for="Template.Name" class="form-control" placeholder="Ex: Instalação Elétrica" style="background-color: #000 !important; color: #fff !important;" />
+                    <span asp-validation-for="Template.Name" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Template.Description" class="form-label">Descrição</label>
+                <textarea asp-for="Template.Description" class="form-control" rows="3" style="background-color: #000 !important; color: #fff !important;"></textarea>
+                <span asp-validation-for="Template.Description" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Template.Observations" class="form-label">Observações</label>
+                <input asp-for="Template.Observations" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                <h4 class="mb-0">Itens do Template</h4>
+                <button type="button" id="addItemBtn" class="btn btn-outline-primary btn-sm rounded-pill">
+                    <i class="bi bi-plus-lg me-2"></i> Adicionar Item
+                </button>
+            </div>
+
+            <div id="template-items">
+                @for (int i = 0; i < Model.Template.Items.Count; i++)
+                {
+                    <div class="card mb-3 template-item bg-dark border-secondary">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-end mb-2">
+                                <button type="button" class="btn-close btn-close-white remove-item" aria-label="Remover"></button>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <label class="form-label text-white">Item</label>
+                                    <input asp-for="Template.Items[i].Name" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
+                                    <span asp-validation-for="Template.Items[i].Name" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label class="form-label text-white">Descrição</label>
+                                    <input asp-for="Template.Items[i].Description" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
+                                </div>
+                                <div class="col-md-2 mb-2">
+                                    <label class="form-label text-white">Qtd</label>
+                                    <input asp-for="Template.Items[i].Quantity" class="form-control" type="number" min="1" style="background-color: #000 !important; color: #fff !important;" />
+                                    <span asp-validation-for="Template.Items[i].Quantity" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-2 mb-2">
+                                    <label class="form-label text-white">Valor Unit.</label>
+                                    <input asp-for="Template.Items[i].UnitPrice" asp-format="{0:N2}" class="form-control money" type="text" style="background-color: #000 !important; color: #fff !important;" />
+                                    <span asp-validation-for="Template.Items[i].UnitPrice" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">SALVAR TEMPLATE</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d+)?$/.test(value);
+        }
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(".", "").replace(",", ".");
+            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        }
+
+        $(document).ready(function () {
+            $('.money').mask('000.000.000.000.000,00', {reverse: true});
+
+            let itemIndex = @Model.Template.Items.Count;
+
+            function addItemRow() {
+                const template = `
+                <div class="card mb-3 template-item bg-dark border-secondary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-end mb-2">
+                            <button type="button" class="btn-close btn-close-white remove-item" aria-label="Remover"></button>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <label class="form-label text-white">Item</label>
+                                <input name="Template.Items[${itemIndex}].Name" class="form-control" required style="background-color: #000 !important; color: #fff !important;" />
+                                <span class="text-danger field-validation-valid" data-valmsg-for="Template.Items[${itemIndex}].Name" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label class="form-label text-white">Descrição</label>
+                                <input name="Template.Items[${itemIndex}].Description" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <label class="form-label text-white">Qtd</label>
+                                <input type="number" name="Template.Items[${itemIndex}].Quantity" class="form-control" value="1" min="1" required style="background-color: #000 !important; color: #fff !important;" />
+                                <span class="text-danger field-validation-valid" data-valmsg-for="Template.Items[${itemIndex}].Quantity" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <label class="form-label text-white">Valor Unit.</label>
+                                <input type="text" name="Template.Items[${itemIndex}].UnitPrice" class="form-control money" value="0,00" required style="background-color: #000 !important; color: #fff !important;" />
+                                <span class="text-danger field-validation-valid" data-valmsg-for="Template.Items[${itemIndex}].UnitPrice" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+                $('#template-items').append(template);
+                $('.money').mask('000.000.000.000.000,00', {reverse: true});
+                itemIndex++;
+            }
+
+            $('#addItemBtn').click(function () {
+                addItemRow();
+            });
+
+            $(document).on('click', '.remove-item', function () {
+                $(this).closest('.template-item').remove();
+                reindexItems();
+            });
+
+            function reindexItems() {
+                $('#template-items .template-item').each(function (index) {
+                    $(this).find('input').each(function () {
+                        if (this.name) {
+                            this.name = this.name.replace(/Items\[\d+\]/, `Items[${index}]`);
+                        }
+                    });
+                    $(this).find('span[data-valmsg-for]').each(function () {
+                        const name = $(this).attr('data-valmsg-for');
+                        if (name) {
+                            $(this).attr('data-valmsg-for', name.replace(/Items\[\d+\]/, `Items[${index}]`));
+                        }
+                    });
+                });
+                itemIndex = $('#template-items .template-item').length;
+            }
+        });
+    </script>
+}
+

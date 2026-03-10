@@ -47,9 +47,31 @@
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Customer.Address" class="form-label text-white">Endereço</label>
-                        <input asp-for="Customer.Address" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
-                        <span asp-validation-for="Customer.Address" class="text-danger"></span>
+                        <label asp-for="ZipCode" class="form-label text-white">CEP</label>
+                        <div class="input-group">
+                            <input asp-for="ZipCode" class="form-control" id="cepInput" placeholder="00000-000" style="background-color: #000 !important; color: #fff !important;" />
+                            <button type="button" class="btn btn-secondary" id="btnBuscarCep">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        <span class="text-muted small">Digite o CEP para preencher o endereço automaticamente.</span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-9 mb-3">
+                            <label asp-for="Customer.Address" class="form-label text-white">Endereço</label>
+                            <input asp-for="Customer.Address" class="form-control" id="enderecoInput" style="background-color: #000 !important; color: #fff !important;" />
+                            <span asp-validation-for="Customer.Address" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label text-white">Número</label>
+                            <input id="numeroInput" class="form-control" placeholder="Nº" style="background-color: #000 !important; color: #fff !important;" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-white">Complemento</label>
+                        <input id="complementoInput" class="form-control" placeholder="Apto, Bloco, etc." style="background-color: #000 !important; color: #fff !important;" />
                     </div>
 
                     <div class="mb-3">

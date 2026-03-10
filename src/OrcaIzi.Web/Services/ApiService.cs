@@ -32,6 +32,40 @@ namespace OrcaIzi.Web.Services
             }
         }
 
+        private static string GetErrorMessage(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content)) return content;
+
+            try
+            {
+                using var doc = System.Text.Json.JsonDocument.Parse(content);
+                if (doc.RootElement.ValueKind != System.Text.Json.JsonValueKind.Object) return content;
+
+                if (doc.RootElement.TryGetProperty("message", out var messageProp) && messageProp.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    var msg = messageProp.GetString();
+                    if (!string.IsNullOrWhiteSpace(msg)) return msg!;
+                }
+
+                if (doc.RootElement.TryGetProperty("detail", out var detailProp) && detailProp.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    var msg = detailProp.GetString();
+                    if (!string.IsNullOrWhiteSpace(msg)) return msg!;
+                }
+
+                if (doc.RootElement.TryGetProperty("title", out var titleProp) && titleProp.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    var msg = titleProp.GetString();
+                    if (!string.IsNullOrWhiteSpace(msg)) return msg!;
+                }
+            }
+            catch
+            {
+            }
+
+            return content;
+        }
+
         public async Task<UserDto?> LoginAsync(LoginDto loginDto)
         {
             var response = await _httpClient.PostAsJsonAsync("api/Auth/login", loginDto);
@@ -99,13 +133,16 @@ namespace OrcaIzi.Web.Services
         public async Task<BudgetDto?> CreateBudgetAsync(CreateBudgetDto budgetDto)
         {
             AddAuthorizationHeader();
+            // Ensure decimals are sent correctly (JSON serialization handles this usually, but let's be safe)
             var response = await _httpClient.PostAsJsonAsync("api/Budgets", budgetDto);
+            
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<BudgetDto>();
             }
-            var errorContent = await response.Content.ReadAsStringAsync();
-            throw new Exception($"Erro ao criar orçamento ({response.StatusCode}): {errorContent}");
+            
+            var content = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Erro ao criar orçamento ({response.StatusCode}): {content}");
         }
 
         public async Task<BudgetDto?> UpdateBudgetAsync(Guid id, CreateBudgetDto budgetDto)
@@ -120,6 +157,20 @@ namespace OrcaIzi.Web.Services
             // Read error content
             var errorContent = await response.Content.ReadAsStringAsync();
             throw new Exception($"API Error ({response.StatusCode}): {errorContent}");
+        }
+
+        public async Task<BudgetDto?> DuplicateBudgetAsync(Guid id)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.PostAsync($"api/Budgets/{id}/duplicate", null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<BudgetDto>();
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Erro ao duplicar orçamento ({response.StatusCode}): {errorContent}");
         }
 
         public async Task<bool> UpdateBudgetStatusAsync(Guid id, string status)
@@ -146,6 +197,86 @@ namespace OrcaIzi.Web.Services
                 return await response.Content.ReadAsByteArrayAsync();
             }
             return null;
+        }
+
+        public async Task<PixPaymentDto?> GetBudgetPaymentAsync(Guid id)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.GetAsync($"api/Budgets/{id}/payment");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<PixPaymentDto>();
+            }
+            return null;
+        }
+
+        public async Task<PixPaymentDto?> CreateBudgetPixPaymentAsync(Guid id)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.PostAsync($"api/Budgets/{id}/payment/pix", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<PixPaymentDto>();
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Erro ao gerar Pix ({response.StatusCode}): {GetErrorMessage(errorContent)}");
+        }
+
+        public async Task<PixPaymentDto?> SyncBudgetPaymentAsync(Guid id)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.PostAsync($"api/Budgets/{id}/payment/sync", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<PixPaymentDto>();
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Erro ao sincronizar pagamento ({response.StatusCode}): {GetErrorMessage(errorContent)}");
+        }
+
+        public async Task<Guid?> EnableBudgetPublicShareAsync(Guid id)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.PostAsync($"api/Budgets/{id}/share", null);
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadFromJsonAsync<System.Text.Json.JsonElement>();
+                if (json.ValueKind == System.Text.Json.JsonValueKind.Object && json.TryGetProperty("shareId", out var shareIdProp))
+                {
+                    if (shareIdProp.ValueKind == System.Text.Json.JsonValueKind.String && Guid.TryParse(shareIdProp.GetString(), out var g))
+                    {
+                        return g;
+                    }
+                }
+                return null;
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Erro ao gerar link público ({response.StatusCode}): {GetErrorMessage(errorContent)}");
+        }
+
+        public async Task<BudgetDto?> GetPublicBudgetByShareIdAsync(Guid shareId)
+        {
+            var response = await _httpClient.GetAsync($"api/public/budgets/{shareId}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<BudgetDto>();
+            }
+            return null;
+        }
+
+        public async Task<bool> PublicApproveBudgetAsync(Guid shareId, PublicBudgetDecisionDto dto)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"api/public/budgets/{shareId}/approve", dto);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> PublicRejectBudgetAsync(Guid shareId, PublicBudgetDecisionDto dto)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"api/public/budgets/{shareId}/reject", dto);
+            return response.IsSuccessStatusCode;
         }
 
         public async Task<DashboardDto?> GetDashboardStatsAsync()
@@ -290,6 +421,85 @@ namespace OrcaIzi.Web.Services
                 return await response.Content.ReadFromJsonAsync<CpfResultDto>(new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
             return null;
+        }
+
+        public async Task<PagedResult<BudgetTemplateDto>?> GetBudgetTemplatesAsync(int pageNumber, int pageSize)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.GetAsync($"api/BudgetTemplates?pageNumber={pageNumber}&pageSize={pageSize}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<PagedResult<BudgetTemplateDto>>();
+            }
+            return null;
+        }
+
+        public async Task<BudgetTemplateDto?> GetBudgetTemplateByIdAsync(Guid id)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.GetAsync($"api/BudgetTemplates/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<BudgetTemplateDto>();
+            }
+            return null;
+        }
+
+        public async Task<BudgetTemplateDto?> CreateBudgetTemplateAsync(CreateBudgetTemplateDto dto)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.PostAsJsonAsync("api/BudgetTemplates", dto);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<BudgetTemplateDto>();
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Erro ao criar template ({response.StatusCode}): {errorContent}");
+        }
+
+        public async Task<BudgetTemplateDto?> UpdateBudgetTemplateAsync(Guid id, CreateBudgetTemplateDto dto)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.PutAsJsonAsync($"api/BudgetTemplates/{id}", dto);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrWhiteSpace(content) || response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                {
+                    return await GetBudgetTemplateByIdAsync(id);
+                }
+
+                try
+                {
+                    return System.Text.Json.JsonSerializer.Deserialize<BudgetTemplateDto>(content, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                }
+                catch
+                {
+                    return await GetBudgetTemplateByIdAsync(id);
+                }
+            }
+            return null;
+        }
+
+        public async Task<bool> DeleteBudgetTemplateAsync(Guid id)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.DeleteAsync($"api/BudgetTemplates/{id}");
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<BudgetDto?> CreateBudgetFromTemplateAsync(Guid templateId, CreateBudgetFromTemplateDto dto)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.PostAsJsonAsync($"api/BudgetTemplates/{templateId}/create-budget", dto);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<BudgetDto>();
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Erro ao criar orçamento do template ({response.StatusCode}): {errorContent}");
         }
     }
 }

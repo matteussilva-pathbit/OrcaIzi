@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrcaIzi.Infrastructure.Context;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OrcaIzi.IntegrationTests
@@ -22,6 +24,15 @@ namespace OrcaIzi.IntegrationTests
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            builder.ConfigureAppConfiguration((context, config) =>
+            {
+                config.AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    ["Database:Provider"] = "InMemory",
+                    ["Database:ApplyMigrationsOnStartup"] = "false"
+                });
+            });
+
             builder.ConfigureServices(services =>
             {
                 // Remove the existing DbContext registration
@@ -50,6 +61,15 @@ namespace OrcaIzi.IntegrationTests
                 if (dbConnectionDescriptor != null)
                 {
                     services.Remove(dbConnectionDescriptor);
+                }
+
+                var sqlServerAssembly = typeof(SqlServerDbContextOptionsExtensions).Assembly;
+                var sqlServerDescriptors = services
+                    .Where(d => (d.ImplementationType?.Assembly == sqlServerAssembly) || d.ServiceType.Assembly == sqlServerAssembly)
+                    .ToList();
+                foreach (var d in sqlServerDescriptors)
+                {
+                    services.Remove(d);
                 }
 
                 // Add DbContext using an in-memory database for testing

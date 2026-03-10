@@ -36,6 +36,20 @@ namespace OrcaIzi.WebAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = budget.Id }, budget);
         }
 
+        [HttpPost("{id}/duplicate")]
+        public async Task<IActionResult> Duplicate(Guid id)
+        {
+            try
+            {
+                var duplicated = await _budgetAppService.DuplicateAsync(id);
+                return CreatedAtAction(nameof(GetById), new { id = duplicated.Id }, duplicated);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message, stackTrace = ex.StackTrace, innerException = ex.InnerException?.Message });
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] CreateBudgetDto budgetDto)
         {
@@ -83,6 +97,68 @@ namespace OrcaIzi.WebAPI.Controllers
             catch (Exception ex) when (ex.Message.Contains("not found") || ex.Message.Contains("permission"))
             {
                 return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("{id}/payment")]
+        public async Task<IActionResult> GetPayment(Guid id)
+        {
+            var payment = await _budgetAppService.GetPixPaymentAsync(id);
+            if (payment == null) return NotFound();
+            return Ok(payment);
+        }
+
+        [HttpPost("{id}/payment/pix")]
+        public async Task<IActionResult> CreatePixPayment(Guid id)
+        {
+            try
+            {
+                var payment = await _budgetAppService.CreatePixPaymentAsync(id);
+                return Ok(payment);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("não configurado", StringComparison.OrdinalIgnoreCase) ||
+                    ex.Message.Contains("AccessToken", StringComparison.OrdinalIgnoreCase))
+                {
+                    return BadRequest(new { message = ex.Message });
+                }
+
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("{id}/payment/sync")]
+        public async Task<IActionResult> SyncPayment(Guid id)
+        {
+            try
+            {
+                var payment = await _budgetAppService.SyncPixPaymentAsync(id);
+                return Ok(payment);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("não configurado", StringComparison.OrdinalIgnoreCase) ||
+                    ex.Message.Contains("AccessToken", StringComparison.OrdinalIgnoreCase))
+                {
+                    return BadRequest(new { message = ex.Message });
+                }
+
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("{id}/share")]
+        public async Task<IActionResult> EnablePublicShare(Guid id)
+        {
+            try
+            {
+                var shareId = await _budgetAppService.EnablePublicShareAsync(id);
+                return Ok(new { shareId });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
             }
         }
 

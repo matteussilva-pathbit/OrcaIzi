@@ -11,6 +11,7 @@ namespace OrcaIzi.Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IBudgetAppService, BudgetAppService>();
+            services.AddScoped<IBudgetTemplateAppService, BudgetTemplateAppService>();
             services.AddScoped<ICustomerAppService, CustomerAppService>();
 
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());

@@ -16,6 +16,8 @@ namespace OrcaIzi.Tests.Application
         private readonly Mock<ICustomerRepository> _customerRepositoryMock;
         private readonly Mock<IHttpContextAccessor> _httpContextAccessorMock;
         private readonly Mock<OrcaIzi.Application.Interfaces.Services.IPdfService> _pdfServiceMock;
+        private readonly Mock<OrcaIzi.Application.Interfaces.Services.IPaymentGateway> _paymentGatewayMock;
+        private readonly Mock<IWhatsAppService> _whatsAppServiceMock;
         private readonly BudgetAppService _budgetAppService;
         private readonly string _userId = "test-user-id";
 
@@ -25,6 +27,8 @@ namespace OrcaIzi.Tests.Application
             _customerRepositoryMock = new Mock<ICustomerRepository>();
             _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             _pdfServiceMock = new Mock<OrcaIzi.Application.Interfaces.Services.IPdfService>();
+            _paymentGatewayMock = new Mock<OrcaIzi.Application.Interfaces.Services.IPaymentGateway>();
+            _whatsAppServiceMock = new Mock<IWhatsAppService>();
 
             var context = new DefaultHttpContext();
             var claims = new List<Claim>
@@ -40,7 +44,9 @@ namespace OrcaIzi.Tests.Application
                 _budgetRepositoryMock.Object,
                 _customerRepositoryMock.Object,
                 _httpContextAccessorMock.Object,
-                _pdfServiceMock.Object
+                _pdfServiceMock.Object,
+                _paymentGatewayMock.Object,
+                _whatsAppServiceMock.Object
             );
         }
 
@@ -56,6 +62,20 @@ namespace OrcaIzi.Tests.Application
 
             _customerRepositoryMock.Setup(x => x.GetByIdAsync(customerId))
                 .ReturnsAsync(customer);
+
+            Budget? createdBudget = null;
+            _budgetRepositoryMock
+                .Setup(x => x.AddAsync(It.IsAny<Budget>()))
+                .Callback<Budget>(b =>
+                {
+                    createdBudget = b;
+                    typeof(Budget).GetProperty("Customer")!.SetValue(createdBudget, customer);
+                })
+                .Returns(Task.CompletedTask);
+
+            _budgetRepositoryMock
+                .Setup(x => x.GetWithItemsAndCustomerAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(() => createdBudget!);
 
             var createDto = new CreateBudgetDto
             {

@@ -20,9 +20,34 @@
                         <i class="bi bi-file-earmark-pdf me-2"></i> Exportar PDF
                     </button>
                 </form>
+                <form id="publicLinkForm" method="post" asp-page-handler="GeneratePublicLinkJson" asp-route-id="@Model.Budget.Id" class="d-none">
+                    @Html.AntiForgeryToken()
+                </form>
+                <button id="btnPublicLink" type="button" class="btn btn-outline-primary rounded-pill px-3 shadow-sm">
+                    <i class="bi bi-link-45deg me-2"></i> Link Público
+                </button>
+                @if (!string.IsNullOrEmpty(Model.Budget.WhatsAppLink))
+                {
+                    <a href="@Model.Budget.WhatsAppLink" target="_blank" class="btn btn-success rounded-pill px-3 shadow-sm">
+                        <i class="bi bi-whatsapp me-2"></i> WhatsApp
+                    </a>
+                }
                 <a asp-page="Edit" asp-route-id="@Model.Budget.Id" class="btn btn-primary rounded-pill px-3 shadow-sm">
                     <i class="bi bi-pencil me-2"></i> Editar
                 </a>
+            </div>
+        </div>
+
+        <div id="publicLinkAlert" class="alert alert-success border-0 shadow-sm d-none" role="alert">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                <div class="fw-semibold">Link público copiado.</div>
+                <div class="d-flex gap-2">
+                    <a id="publicLinkOpen" href="#" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-3">Abrir</a>
+                    <button id="publicLinkCopyAgain" type="button" class="btn btn-sm btn-outline-dark rounded-pill px-3">Copiar novamente</button>
+                </div>
+            </div>
+            <div class="mt-2">
+                <input id="publicLinkInput" class="form-control" readonly />
             </div>
         </div>
 
@@ -39,8 +64,11 @@
                     </div>
                     <div class="text-end">
                         <span class="badge rounded-pill px-3 py-2 text-uppercase mb-2
-                            @(Model.Budget.Status.ToString() == "Approved" ? "bg-success" : 
-                              Model.Budget.Status.ToString() == "Pending" ? "bg-warning text-dark" : "bg-secondary")">
+                            @(Model.Budget.Status.ToString() == "Paid" ? "bg-success" :
+                              Model.Budget.Status.ToString() == "Approved" ? "bg-primary" :
+                              Model.Budget.Status.ToString() == "Rejected" ? "bg-danger" :
+                              Model.Budget.Status.ToString() == "Sent" ? "bg-warning text-dark" :
+                              "bg-secondary")">
                             @Model.Budget.Status
                         </span>
                         <div class="text-muted small">Válido até</div>
@@ -103,6 +131,66 @@
                     </div>
                 </div>
 
+                <div class="mt-4 mb-5">
+                    <h6 class="text-uppercase text-muted small fw-bold mb-3">Pagamento (Pix)</h6>
+                    <div class="p-4 bg-light rounded-3">
+                        @if (Model.Payment == null)
+                        {
+                            <p class="text-muted mb-3">Gere um Pix para este orçamento e envie para o cliente.</p>
+                            <form method="post" asp-page-handler="GeneratePix" asp-route-id="@Model.Budget.Id" class="d-inline">
+                                <button type="submit" class="btn btn-success rounded-pill px-4">
+                                    <i class="bi bi-qr-code me-2"></i> Gerar Pix
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="d-flex flex-column flex-lg-row gap-4">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <div class="fw-bold">Status: @Model.Payment.Status</div>
+                                            <div class="text-muted small">Valor: @Model.Payment.Amount.ToString("C2")</div>
+                                        </div>
+                                        <form method="post" asp-page-handler="SyncPayment" asp-route-id="@Model.Budget.Id" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-primary rounded-pill px-3">
+                                                <i class="bi bi-arrow-repeat me-2"></i> Sincronizar
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    @if (!string.IsNullOrWhiteSpace(Model.Payment.TicketUrl))
+                                    {
+                                        <a href="@Model.Payment.TicketUrl" target="_blank" class="btn btn-outline-dark rounded-pill px-3 mb-3">
+                                            <i class="bi bi-box-arrow-up-right me-2"></i> Abrir link do Pix
+                                        </a>
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(Model.Payment.QrCode))
+                                    {
+                                        <label class="form-label text-muted small fw-bold">Copia e cola</label>
+                                        <div class="input-group">
+                                            <input id="pixCode" class="form-control" value="@Model.Payment.QrCode" readonly />
+                                            <button type="button" class="btn btn-dark" onclick="navigator.clipboard.writeText(document.getElementById('pixCode').value);">
+                                                Copiar
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+
+                                @if (!string.IsNullOrWhiteSpace(Model.Payment.QrCodeBase64))
+                                {
+                                    <div class="text-center">
+                                        <div class="bg-white p-3 rounded-3 shadow-sm">
+                                            <img src="data:image/png;base64,@Model.Payment.QrCodeBase64" alt="QR Code Pix" style="max-width: 220px; height: auto;" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
                 <!-- Footer / Totals -->
                 <div class="row justify-content-end">
                     <div class="col-md-5 col-lg-4">
@@ -131,3 +219,66 @@
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        var btn = document.getElementById('btnPublicLink');
+        if (!btn) return;
+
+        var form = document.getElementById('publicLinkForm');
+        var alertBox = document.getElementById('publicLinkAlert');
+        var input = document.getElementById('publicLinkInput');
+        var open = document.getElementById('publicLinkOpen');
+        var copyAgain = document.getElementById('publicLinkCopyAgain');
+
+        function showAlert(url, copied) {
+            input.value = url;
+            open.href = url;
+            alertBox.classList.remove('d-none');
+            alertBox.classList.toggle('alert-success', copied === true);
+            alertBox.classList.toggle('alert-warning', copied !== true);
+            alertBox.querySelector('.fw-semibold').textContent = copied === true ? 'Link público copiado.' : 'Link gerado. Copie manualmente se necessário.';
+        }
+
+        async function copyText(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        btn.addEventListener('click', async function () {
+            btn.disabled = true;
+            try {
+                var tokenInput = form.querySelector('input[name="__RequestVerificationToken"]');
+                var token = tokenInput ? tokenInput.value : '';
+
+                var res = await fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'RequestVerificationToken': token },
+                    credentials: 'same-origin'
+                });
+                var json = await res.json();
+                if (!json || json.ok !== true || !json.url) {
+                    alertBox.classList.remove('d-none');
+                    alertBox.classList.remove('alert-success');
+                    alertBox.classList.add('alert-danger');
+                    alertBox.querySelector('.fw-semibold').textContent = (json && json.message) ? json.message : 'Erro ao gerar link público.';
+                    return;
+                }
+
+                var copied = await copyText(json.url);
+                showAlert(json.url, copied);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        copyAgain.addEventListener('click', async function () {
+            var ok = await copyText(input.value);
+            showAlert(input.value, ok);
+        });
+    })();
+</script>

@@ -13,6 +13,11 @@ using Serilog;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using Microsoft.EntityFrameworkCore;
+using OrcaIzi.Infrastructure.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
@@ -121,6 +126,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseExceptionHandler(); // Always use exception handler for consistent API responses
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+// Set culture to pt-BR for correct decimal parsing (49,90)
+var supportedCultures = new[] { new CultureInfo("pt-BR") };
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("pt-BR"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
+
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -135,6 +152,88 @@ try
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
+
+        var dbContext = services.GetRequiredService<OrcaIziDbContext>();
+        var providerName = dbContext.Database.ProviderName;
+        if (!string.IsNullOrWhiteSpace(providerName) && providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase))
+        {
+            var connection = dbContext.Database.GetDbConnection();
+            await connection.OpenAsync();
+            try
+            {
+                await using (var existsCommand = connection.CreateCommand())
+                {
+                    existsCommand.CommandText = "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '__EFMigrationsHistory'";
+                    var exists = await existsCommand.ExecuteScalarAsync();
+
+                    if (exists == null)
+                    {
+                        await using var createHistory = connection.CreateCommand();
+                        createHistory.CommandText = "CREATE TABLE [__EFMigrationsHistory] ([MigrationId] nvarchar(150) NOT NULL, [ProductVersion] nvarchar(32) NOT NULL, CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId]));";
+                        await createHistory.ExecuteNonQueryAsync();
+                    }
+                }
+
+                int historyCount;
+                await using (var countCommand = connection.CreateCommand())
+                {
+                    countCommand.CommandText = "SELECT COUNT(1) FROM [__EFMigrationsHistory]";
+                    historyCount = Convert.ToInt32(await countCommand.ExecuteScalarAsync());
+                }
+
+                if (historyCount == 0)
+                {
+                    await using var customersExists = connection.CreateCommand();
+                    customersExists.CommandText = "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Customers'";
+                    var hasCustomersTable = await customersExists.ExecuteScalarAsync();
+
+                    if (hasCustomersTable != null)
+                    {
+                        var migrations = dbContext.Database.GetMigrations().ToList();
+                        var lastMigration = migrations.LastOrDefault();
+                        var version = "10.0.3";
+
+                        foreach (var migrationId in migrations)
+                        {
+                            if (migrationId == lastMigration)
+                            {
+                                continue;
+                            }
+
+                            await using var insertCommand = connection.CreateCommand();
+                            insertCommand.CommandText = "INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (@id, @ver)";
+                            var p1 = insertCommand.CreateParameter();
+                            p1.ParameterName = "@id";
+                            p1.Value = migrationId;
+                            insertCommand.Parameters.Add(p1);
+                            var p2 = insertCommand.CreateParameter();
+                            p2.ParameterName = "@ver";
+                            p2.Value = version;
+                            insertCommand.Parameters.Add(p2);
+                            await insertCommand.ExecuteNonQueryAsync();
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await connection.CloseAsync();
+            }
+
+            var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+            if (pendingMigrations.Any())
+            {
+                Log.Warning("Pending migrations detected: {Migrations}", pendingMigrations);
+
+                var applyMigrations = app.Configuration.GetValue<bool>("Database:ApplyMigrationsOnStartup");
+                if (applyMigrations)
+                {
+                    await dbContext.Database.MigrateAsync();
+                    Log.Information("Applied pending migrations on startup.");
+                }
+            }
+        }
+
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         await SeedService.SeedRolesAsync(roleManager);
 

@@ -16,9 +16,17 @@ namespace OrcaIzi.Web.Interfaces
         Task<BudgetDto?> GetBudgetByIdAsync(Guid id);
         Task<BudgetDto?> CreateBudgetAsync(CreateBudgetDto budgetDto);
         Task<BudgetDto?> UpdateBudgetAsync(Guid id, CreateBudgetDto budgetDto);
+        Task<BudgetDto?> DuplicateBudgetAsync(Guid id);
         Task<bool> UpdateBudgetStatusAsync(Guid id, string status);
         Task<bool> DeleteBudgetAsync(Guid id);
         Task<byte[]?> GetBudgetPdfAsync(Guid id);
+        Task<PixPaymentDto?> GetBudgetPaymentAsync(Guid id);
+        Task<PixPaymentDto?> CreateBudgetPixPaymentAsync(Guid id);
+        Task<PixPaymentDto?> SyncBudgetPaymentAsync(Guid id);
+        Task<Guid?> EnableBudgetPublicShareAsync(Guid id);
+        Task<BudgetDto?> GetPublicBudgetByShareIdAsync(Guid shareId);
+        Task<bool> PublicApproveBudgetAsync(Guid shareId, PublicBudgetDecisionDto dto);
+        Task<bool> PublicRejectBudgetAsync(Guid shareId, PublicBudgetDecisionDto dto);
         Task<DashboardDto?> GetDashboardStatsAsync();
         
         // Customer Operations
@@ -36,5 +44,13 @@ namespace OrcaIzi.Web.Interfaces
         Task<CepResultDto?> ConsultarCepAsync(string cep);
         Task<CnpjResultDto?> ConsultarCnpjAsync(string cnpj);
         Task<CpfResultDto?> ConsultarCpfAsync(string cpf);
+
+        // Budget Template Operations
+        Task<PagedResult<BudgetTemplateDto>?> GetBudgetTemplatesAsync(int pageNumber, int pageSize);
+        Task<BudgetTemplateDto?> GetBudgetTemplateByIdAsync(Guid id);
+        Task<BudgetTemplateDto?> CreateBudgetTemplateAsync(CreateBudgetTemplateDto dto);
+        Task<BudgetTemplateDto?> UpdateBudgetTemplateAsync(Guid id, CreateBudgetTemplateDto dto);
+        Task<bool> DeleteBudgetTemplateAsync(Guid id);
+        Task<BudgetDto?> CreateBudgetFromTemplateAsync(Guid templateId, CreateBudgetFromTemplateDto dto);
     }
 }

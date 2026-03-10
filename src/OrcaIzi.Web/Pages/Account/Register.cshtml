@@ -52,6 +52,57 @@
                         </div>
                     </div>
 
+                    <h5 class="text-white mt-4 mb-3">Endereço</h5>
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input asp-for="Input.ZipCode" class="form-control" placeholder="CEP" id="cepInput" style="background-color: #000 !important; color: #fff !important;" />
+                                <label asp-for="Input.ZipCode" class="text-muted">CEP</label>
+                                <span asp-validation-for="Input.ZipCode" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-floating">
+                                <input asp-for="Input.Street" class="form-control" placeholder="Rua" id="ruaInput" style="background-color: #000 !important; color: #fff !important;" />
+                                <label asp-for="Input.Street" class="text-muted">Logradouro</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input asp-for="Input.Number" class="form-control" placeholder="Número" style="background-color: #000 !important; color: #fff !important;" />
+                                <label asp-for="Input.Number" class="text-muted">Número</label>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-floating">
+                                <input asp-for="Input.Complement" class="form-control" placeholder="Complemento" style="background-color: #000 !important; color: #fff !important;" />
+                                <label asp-for="Input.Complement" class="text-muted">Complemento</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-4">
+                        <div class="col-md-5">
+                            <div class="form-floating">
+                                <input asp-for="Input.Neighborhood" class="form-control" placeholder="Bairro" id="bairroInput" style="background-color: #000 !important; color: #fff !important;" />
+                                <label asp-for="Input.Neighborhood" class="text-muted">Bairro</label>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-floating">
+                                <input asp-for="Input.City" class="form-control" placeholder="Cidade" id="cidadeInput" style="background-color: #000 !important; color: #fff !important;" />
+                                <label asp-for="Input.City" class="text-muted">Cidade</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-floating">
+                                <input asp-for="Input.State" class="form-control" placeholder="UF" id="ufInput" style="background-color: #000 !important; color: #fff !important;" />
+                                <label asp-for="Input.State" class="text-muted">UF</label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary btn-lg">
                             CRIAR MINHA CONTA
@@ -72,4 +123,67 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            // CEP Lookup
+            $('#cepInput').blur(function () {
+                var cep = $(this).val().replace(/\D/g, '');
+                if (cep != "") {
+                    var validacep = /^[0-9]{8}$/;
+                    if(validacep.test(cep)) {
+                        // Loading state
+                        $('#ruaInput').val("...");
+                        $('#bairroInput').val("...");
+                        $('#cidadeInput').val("...");
+                        $('#ufInput').val("...");
+
+                        $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function(dados) {
+                            if (!("erro" in dados)) {
+                                $('#ruaInput').val(dados.logradouro);
+                                $('#bairroInput').val(dados.bairro);
+                                $('#cidadeInput').val(dados.localidade);
+                                $('#ufInput').val(dados.uf);
+                                $('#Input_Number').focus();
+                            } else {
+                                alert("CEP não encontrado.");
+                                clearAddress();
+                            }
+                        });
+                    } else {
+                        alert("Formato de CEP inválido.");
+                        clearAddress();
+                    }
+                } else {
+                    clearAddress();
+                }
+            });
+
+            function clearAddress() {
+                $('#ruaInput').val("");
+                $('#bairroInput').val("");
+                $('#cidadeInput').val("");
+                $('#ufInput').val("");
+            }
+
+            // Success Popup
+            @if (ViewData["AccountCreated"] != null && (bool)ViewData["AccountCreated"])
+            {
+                <text>
+                Swal.fire({
+                    title: 'Conta criada com sucesso!',
+                    text: 'Bem-vindo ao OrcaIzi. Você será redirecionado.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#0d6efd', // Bootstrap Primary
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/Index';
+                    }
+                });
+                </text>
+            }
+        });
+    </script>
 }

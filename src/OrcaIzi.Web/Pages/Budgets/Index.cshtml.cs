@@ -50,5 +50,38 @@ namespace OrcaIzi.Web.Pages.Budgets
 
             return RedirectToPage();
         }
+
+        public async Task<IActionResult> OnPostExportPdfAsync(Guid id)
+        {
+            var pdfBytes = await _apiService.GetBudgetPdfAsync(id);
+            if (pdfBytes == null)
+            {
+                TempData["Error"] = "Erro ao gerar PDF.";
+                return RedirectToPage();
+            }
+
+            return File(pdfBytes, "application/pdf", $"Orcamento_{id}.pdf");
+        }
+
+        public async Task<IActionResult> OnPostDuplicateAsync(Guid id)
+        {
+            try
+            {
+                var duplicated = await _apiService.DuplicateBudgetAsync(id);
+                if (duplicated == null)
+                {
+                    TempData["Error"] = "Erro ao duplicar orçamento.";
+                    return RedirectToPage();
+                }
+
+                TempData["Success"] = "Orçamento duplicado com sucesso.";
+                return RedirectToPage("Edit", new { id = duplicated.Id });
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToPage();
+            }
+        }
     }
 }

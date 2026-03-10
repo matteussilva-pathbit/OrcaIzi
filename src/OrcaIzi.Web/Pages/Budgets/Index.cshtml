@@ -61,8 +61,12 @@
                                 </td>
                                 <td>
                                     <span class="badge rounded-pill bg-opacity-10 text-uppercase px-3 py-2
-                                        @(item.Status.ToString() == "Approved" ? "bg-success text-success" : 
-                                          item.Status.ToString() == "Pending" ? "bg-warning text-warning" : "bg-secondary text-secondary")">
+                                        @(item.Status.ToString() == "Paid" ? "bg-success text-success" :
+                                          item.Status.ToString() == "Approved" ? "bg-primary text-primary" :
+                                          item.Status.ToString() == "Rejected" ? "bg-danger text-danger" :
+                                          item.Status.ToString() == "Sent" ? "bg-warning text-warning" :
+                                          item.Status.ToString() == "Cancelled" ? "bg-dark text-dark" :
+                                          "bg-secondary text-secondary")">
                                         @item.Status
                                     </span>
                                 </td>
@@ -73,6 +77,22 @@
                                         <a asp-page="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light text-muted" title="Detalhes">
                                             <i class="bi bi-eye"></i>
                                         </a>
+                                        <form method="post" asp-page-handler="ExportPdf" asp-route-id="@item.Id" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-light text-danger" title="PDF">
+                                                <i class="bi bi-file-earmark-pdf"></i>
+                                            </button>
+                                        </form>
+                                        <form method="post" asp-page-handler="Duplicate" asp-route-id="@item.Id" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-light text-primary" title="Duplicar">
+                                                <i class="bi bi-copy"></i>
+                                            </button>
+                                        </form>
+                                        @if (!string.IsNullOrEmpty(item.WhatsAppLink))
+                                        {
+                                            <a href="@item.WhatsAppLink" target="_blank" class="btn btn-sm btn-light text-success" title="WhatsApp">
+                                                <i class="bi bi-whatsapp"></i>
+                                            </a>
+                                        }
                                         <a asp-page="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light text-muted" title="Editar">
                                             <i class="bi bi-pencil"></i>
                                         </a>

@@ -35,6 +35,12 @@ namespace OrcaIzi.Web.Pages.Budgets
 
         public async Task<IActionResult> OnPostAsync()
         {
+            // Debug: Check received values
+            // foreach (var item in Budget.Items)
+            // {
+            //     Console.WriteLine($"Item: {item.Name}, Price: {item.UnitPrice}");
+            // }
+
             if (!ModelState.IsValid)
             {
                 // Reload Customers
@@ -42,6 +48,12 @@ namespace OrcaIzi.Web.Pages.Budgets
                 Customers = new SelectList(customers?.Items ?? new List<CustomerDto>(), "Id", "Name");
                 return Page();
             }
+
+            // Manually parse UnitPrice for each item if needed, but ModelBinder with pt-BR culture should handle it.
+            // However, let's ensure the API receives correct decimals.
+            // Since we are using an API Service, the DTO is serialized to JSON.
+            // The issue might be the API Service not sending the correct JSON format for decimals or the API not parsing it correctly.
+            // Let's verify the API Service implementation.
 
             try
             {

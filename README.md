@@ -79,18 +79,109 @@ A solução `OrcaIzi.sln` é organizada em projetos seguindo a Clean Architectur
 | **Testar** | `dotnet test` |
 | **Criar Migration** | `dotnet ef migrations add NomeMigration --project src/OrcaIzi.Infrastructure --startup-project src/OrcaIzi.WebAPI` |
 | **Aplicar Migration** | `dotnet ef database update --project src/OrcaIzi.Infrastructure --startup-project src/OrcaIzi.WebAPI` |
+| **Listar Migrations** | `dotnet ef migrations list --project src/OrcaIzi.Infrastructure --startup-project src/OrcaIzi.WebAPI` |
 
 ## ✅ Funcionalidades Implementadas
 
-- **CRUD Completo**: Clientes e Orçamentos (Criar, Ler, Atualizar, Deletar).
+- **CRUD Completo**: Clientes, Orçamentos e Modelos de Orçamento (templates).
 - **Paginação**: Endpoints otimizados com paginação (`PagedResult`).
 - **Autenticação Segura**: Registro e Login com JWT.
-- **Dashboard Interativo**: Visão geral do negócio com gráficos e estatísticas em tempo real.
-- **Exportação PDF**: Geração de orçamentos em PDF com layout profissional.
+- **Dashboard Interativo**: Visão geral do negócio com gráficos e estatísticas em tempo quase real.
+- **Exportação PDF**: Geração de orçamentos em PDF com layout profissional (v2), incluindo dados da empresa, cliente, itens e condição de pagamento.
+- **Pagamento Pix (Mercado Pago)**:
+  - Geração de cobrança Pix diretamente do orçamento.
+  - Exibição de QR Code, código “copia e cola” e link do boleto Pix.
+  - Sincronização de status via API e webhook Mercado Pago.
+  - Atualização automática do status do orçamento para **Paid** quando aprovado.
+- **Link Público do Orçamento**:
+  - Geração de link único de acesso sem login.
+  - Página pública com visualização do orçamento, botão de pagamento Pix e formulário de **aprovar/rejeitar**.
+  - Registro de “assinatura” simples (nome + documento) quando o cliente aprova ou rejeita.
 - **Validação**: Dados de entrada validados automaticamente.
 - **Tratamento de Erros**: Middleware global (RFC 7807 Problem Details).
-- **Testes**: Cobertura com testes unitários e de integração (Setup profissional com WebApplicationFactory e EF In-Memory).
+- **Testes**: Cobertura com testes unitários e de integração (setup com `WebApplicationFactory` e EF In-Memory).
 - **Logging**: Rastreamento de operações com Serilog.
+
+## 💳 Configuração de Pagamentos (Mercado Pago)
+
+No projeto `OrcaIzi.WebAPI`, a configuração de pagamentos fica em:
+
+- [appsettings.Development.json](./src/OrcaIzi.WebAPI/appsettings.Development.json)
+
+Chaves utilizadas:
+
+```json
+"Payments": {
+  "WebhookToken": "",
+  "MercadoPago": {
+    "AccessToken": "",
+    "NotificationUrl": ""
+  }
+}
+```
+
+### AccessToken
+- Configure via **user-secrets** (recomendado para desenvolvimento) ou variáveis de ambiente em produção:
+
+```bash
+dotnet user-secrets init --project src/OrcaIzi.WebAPI
+dotnet user-secrets set "Payments:MercadoPago:AccessToken" "SEU_TOKEN_AQUI" --project src/OrcaIzi.WebAPI
+```
+
+## 🗄️ Banco de Dados e Migrations
+
+- O repositório inclui um `docker-compose.yml` para subir o SQL Server localmente.
+- Para atualizar o schema, rode:
+
+```bash
+dotnet ef database update --project src/OrcaIzi.Infrastructure --startup-project src/OrcaIzi.WebAPI
+```
+
+- Se estiver em desenvolvimento, também é possível deixar a API aplicar migrations automaticamente via:
+  - `Database:ApplyMigrationsOnStartup` em `appsettings.Development.json`.
+
+### Webhook Mercado Pago
+- Defina `NotificationUrl` com a URL pública do webhook:
+
+```json
+"Payments": {
+  "WebhookToken": "opcional_token_segredo",
+  "MercadoPago": {
+    "AccessToken": "",
+    "NotificationUrl": "https://seu-dominio.com/api/Payments/mercadopago/webhook"
+  }
+}
+```
+
+- No painel do Mercado Pago, configure o webhook para apontar para essa URL.
+- Se `WebhookToken` estiver preenchido, envie o header `X-Webhook-Token` com o mesmo valor em todas as chamadas.
+
+### Endpoints principais de pagamento
+
+- `POST /api/Budgets/{id}/payment/pix` → Gera o pagamento Pix.
+- `GET  /api/Budgets/{id}/payment` → Consulta pagamento salvo no orçamento.
+- `POST /api/Budgets/{id}/payment/sync` → Sincroniza status no provedor.
+- `POST /api/Payments/mercadopago/webhook` → Recebe notificações do Mercado Pago.
+
+## 🔗 Link Público do Orçamento
+
+Fluxo:
+
+1. Usuário logado abre **Detalhes do Orçamento** no frontend (`/Budgets/Details/{id}`).
+2. Clica em **Link Público**:
+   - Chama `POST /api/Budgets/{id}/share`, que gera um `PublicShareId`.
+   - O frontend monta o link:  
+     `https://seu-site/Public/Budgets/{shareId}` e copia para o clipboard.
+3. O cliente abre o link:
+   - `GET /api/public/budgets/{shareId}` → carrega dados.
+   - Página pública Razor: `/Public/Budgets/{shareId}`.
+4. Na página pública o cliente pode:
+   - Visualizar o orçamento completo.
+   - Clicar **Pagar com Pix** (usa `PaymentLink` gerado pelo gateway, quando existir).
+   - **Aprovar** → `POST /api/public/budgets/{shareId}/approve`.
+   - **Rejeitar** → `POST /api/public/budgets/{shareId}/reject`.
+
+Isso permite que o usuário envie somente um link para o cliente final, que consegue ver, aprovar e pagar o orçamento sem precisar criar conta.
 
 ## 🧪 Exemplos de Payload (API)
 

@@ -16,6 +16,15 @@ namespace OrcaIzi.Infrastructure.Mappings
             builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(20);
             builder.Property(x => x.Observations).HasMaxLength(1000).IsRequired(false);
             builder.Property(x => x.DigitalSignature).HasMaxLength(4000).IsRequired(false);
+            builder.Property(x => x.PaymentProvider).HasMaxLength(50).IsRequired(false);
+            builder.Property(x => x.PaymentExternalId).HasMaxLength(100).IsRequired(false);
+            builder.Property(x => x.PaymentStatus).HasMaxLength(50).IsRequired(false);
+            builder.Property(x => x.PaymentLink).HasMaxLength(2000).IsRequired(false);
+            builder.Property(x => x.PaymentQrCode).HasMaxLength(4000).IsRequired(false);
+            builder.Property(x => x.PaymentQrCodeBase64).HasMaxLength(8000).IsRequired(false);
+            builder.Property(x => x.PublicShareId).IsRequired(false);
+            builder.Property(x => x.PublicShareEnabled).HasDefaultValue(false);
+            builder.Property(x => x.PublicShareCreatedAt).IsRequired(false);
 
             builder.HasMany(x => x.Items)
                 .WithOne(x => x.Budget)

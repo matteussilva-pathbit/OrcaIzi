@@ -19,8 +19,27 @@ namespace OrcaIzi.Infrastructure.Repositories
         {
             return await _dbSet
                 .Include(x => x.Customer)
+                .Include(x => x.User)
                 .Include(x => x.Items)
                 .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<Budget?> GetByPaymentExternalIdAsync(string paymentExternalId)
+        {
+            return await _dbSet
+                .Include(x => x.Customer)
+                .Include(x => x.User)
+                .Include(x => x.Items)
+                .FirstOrDefaultAsync(x => x.PaymentExternalId == paymentExternalId);
+        }
+
+        public async Task<Budget?> GetByPublicShareIdAsync(Guid publicShareId)
+        {
+            return await _dbSet
+                .Include(x => x.Customer)
+                .Include(x => x.User)
+                .Include(x => x.Items)
+                .FirstOrDefaultAsync(x => x.PublicShareId == publicShareId && x.PublicShareEnabled);
         }
 
         public override async Task<IEnumerable<Budget>> GetAllAsync()
@@ -79,11 +98,19 @@ namespace OrcaIzi.Infrastructure.Repositories
             // Ensure new items are added
             foreach (var item in budget.Items)
             {
-                // We need to ensure these are treated as new insertions
-                // Since they might have IDs generated in memory, we need to be careful.
-                // Best to let EF treat them as Added.
+                // Ensure Description is explicitly handled
+                // Even if it's null, we want EF to know about it.
+                // However, the issue might be that EF thinks it's an existing entity if IDs are preserved in memory?
+                // No, BudgetItem ID is Guid.NewGuid() usually.
+                
                 var entry = _context.Entry(item);
                 entry.State = EntityState.Added;
+                
+                // Explicitly set Description to null if needed (though EF should handle it)
+                if (item.Description == null)
+                {
+                    entry.Property("Description").IsModified = true;
+                }
             }
             
             await Task.CompletedTask;

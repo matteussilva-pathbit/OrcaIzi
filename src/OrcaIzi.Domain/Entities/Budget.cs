@@ -14,6 +14,17 @@ namespace OrcaIzi.Domain.Entities
         public DateTime ExpirationDate { get; private set; }
         public string? Observations { get; private set; }
         public string? DigitalSignature { get; private set; } // Base64 or URL
+        public string? PaymentProvider { get; private set; }
+        public string? PaymentExternalId { get; private set; }
+        public string? PaymentStatus { get; private set; }
+        public string? PaymentLink { get; private set; }
+        public string? PaymentQrCode { get; private set; }
+        public string? PaymentQrCodeBase64 { get; private set; }
+        public DateTime? PaymentCreatedAt { get; private set; }
+        public DateTime? PaidAt { get; private set; }
+        public Guid? PublicShareId { get; private set; }
+        public bool PublicShareEnabled { get; private set; }
+        public DateTime? PublicShareCreatedAt { get; private set; }
 
         private readonly List<BudgetItem> _items = new List<BudgetItem>();
         public IReadOnlyCollection<BudgetItem> Items => _items.AsReadOnly();
@@ -46,7 +57,7 @@ namespace OrcaIzi.Domain.Entities
             CalculateTotal();
         }
 
-        public void AddItem(string name, string description, int quantity, decimal unitPrice)
+        public void AddItem(string name, string? description, int quantity, decimal unitPrice)
         {
             var item = new BudgetItem(name, description, quantity, unitPrice, Id);
             _items.Add(item);
@@ -84,6 +95,47 @@ namespace OrcaIzi.Domain.Entities
         public void SetOwner(string userId)
         {
             UserId = userId;
+        }
+
+        public void SetPayment(string provider, string externalId, string status, string? link, string? qrCode, string? qrCodeBase64, DateTime? createdAt)
+        {
+            PaymentProvider = provider;
+            PaymentExternalId = externalId;
+            PaymentStatus = status;
+            PaymentLink = link;
+            PaymentQrCode = qrCode;
+            PaymentQrCodeBase64 = qrCodeBase64;
+            PaymentCreatedAt = createdAt ?? DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdatePaymentStatus(string status, DateTime? paidAt = null)
+        {
+            PaymentStatus = status;
+            if (paidAt != null)
+            {
+                PaidAt = paidAt;
+            }
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public Guid EnablePublicShare()
+        {
+            if (PublicShareId == null)
+            {
+                PublicShareId = Guid.NewGuid();
+            }
+
+            PublicShareEnabled = true;
+            PublicShareCreatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+            return PublicShareId.Value;
+        }
+
+        public void DisablePublicShare()
+        {
+            PublicShareEnabled = false;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 
