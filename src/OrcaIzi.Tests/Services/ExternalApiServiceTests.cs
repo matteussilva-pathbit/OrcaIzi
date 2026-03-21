@@ -1,11 +1,4 @@
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
-using Moq;
-using OrcaIzi.Infrastructure.Services.External;
-using System.Net;
-using Xunit;
-
-namespace OrcaIzi.Tests.Services
+﻿﻿namespace OrcaIzi.Tests.Services
 {
     public class ExternalApiServiceTests
     {
@@ -25,7 +18,7 @@ namespace OrcaIzi.Tests.Services
             _mockFactory.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(client);
 
             // Mock cache
-            object cacheEntry;
+            object? cacheEntry = null;
             _mockCache.Setup(mc => mc.TryGetValue(It.IsAny<object>(), out cacheEntry)).Returns(false);
             _mockCache.Setup(mc => mc.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>);
 
@@ -50,3 +43,6 @@ namespace OrcaIzi.Tests.Services
         }
     }
 }
+
+
+

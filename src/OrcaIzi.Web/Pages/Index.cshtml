@@ -6,7 +6,7 @@
     ViewData["FullWidth"] = true;
 }
 
-@if (!User.Identity.IsAuthenticated)
+@if (!(User?.Identity?.IsAuthenticated ?? false))
 {
     <!-- Hero Section -->
     <div class="hero-section">

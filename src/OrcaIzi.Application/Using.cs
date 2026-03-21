@@ -1,0 +1,19 @@
+﻿﻿global using FluentValidation;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.Extensions.DependencyInjection;
+global using OrcaIzi.Application.DTOs;
+global using OrcaIzi.Application.Interfaces.Services;
+global using OrcaIzi.Application.Interfaces;
+global using OrcaIzi.Application.Services;
+global using OrcaIzi.Domain.Core;
+global using OrcaIzi.Domain.Entities;
+global using OrcaIzi.Domain.Interfaces;
+global using System.Collections.Generic;
+global using System.ComponentModel.DataAnnotations;
+global using System.Linq;
+global using System.Reflection;
+global using System.Security.Claims;
+global using System.Text;
+global using System.Threading.Tasks;
+global using System;
+

@@ -1,18 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using OrcaIzi.Application.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using OrcaIzi.Infrastructure.Context;
-using System.Net.Http.Json;
-using System.Net;
-using System.Net.Http.Headers;
-using Xunit;
-
 namespace OrcaIzi.IntegrationTests
 {
     public class BudgetIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
@@ -81,7 +66,7 @@ namespace OrcaIzi.IntegrationTests
             var response = await _client.PostAsJsonAsync("/api/Auth/register", registerDto);
             response.EnsureSuccessStatusCode();
             var userDto = await response.Content.ReadFromJsonAsync<UserDto>();
-            return userDto.Token;
+            return userDto!.Token;
         }
 
         [Fact]
@@ -109,7 +94,7 @@ namespace OrcaIzi.IntegrationTests
             {
                 Title = "Test Budget",
                 Description = "Budget Description",
-                CustomerId = customer.Id,
+                CustomerId = customer!.Id,
                 ExpirationDate = DateTime.Now.AddDays(7),
                 Items = new List<CreateBudgetItemDto>
                 {
@@ -156,7 +141,7 @@ namespace OrcaIzi.IntegrationTests
             {
                 Title = "Budget Update Test",
                 Description = "Desc",
-                CustomerId = customer.Id,
+                CustomerId = customer!.Id,
                 Items = new List<CreateBudgetItemDto>
                 {
                     new CreateBudgetItemDto { Name = "Item A", Description = "Initial Desc", Quantity = 1, UnitPrice = 50 }
@@ -168,7 +153,7 @@ namespace OrcaIzi.IntegrationTests
             // Act - Update to remove description
             var updateDto = new CreateBudgetDto
             {
-                Title = createdBudget.Title,
+                Title = createdBudget!.Title,
                 Description = createdBudget.Description,
                 CustomerId = createdBudget.CustomerId,
                 Status = createdBudget.Status,
@@ -185,7 +170,7 @@ namespace OrcaIzi.IntegrationTests
                 }
             };
 
-            var updateResponse = await _client.PutAsJsonAsync($"/api/Budgets/{createdBudget.Id}", updateDto);
+            var updateResponse = await _client.PutAsJsonAsync($"/api/Budgets/{createdBudget!.Id}", updateDto);
 
             // Assert
             if (!updateResponse.IsSuccessStatusCode)
@@ -198,7 +183,10 @@ namespace OrcaIzi.IntegrationTests
             // Verify fetch
             var getResponse = await _client.GetAsync($"/api/Budgets/{createdBudget.Id}");
             var fetchedBudget = await getResponse.Content.ReadFromJsonAsync<BudgetDto>();
-            Assert.Null(fetchedBudget.Items[0].Description);
+            Assert.Null(fetchedBudget!.Items[0].Description);
         }
     }
 }
+
+
+

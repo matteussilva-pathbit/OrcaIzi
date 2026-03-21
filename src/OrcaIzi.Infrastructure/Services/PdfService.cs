@@ -1,14 +1,6 @@
-using System.Threading.Tasks;
-using QuestPDF.Fluent;
-using QuestPDF.Helpers;
-using QuestPDF.Infrastructure;
-using QuestPDF.Previewer;
-using OrcaIzi.Domain.Entities;
-using OrcaIzi.Domain.Interfaces;
-
-namespace OrcaIzi.Infrastructure.Services
+﻿﻿﻿﻿﻿namespace OrcaIzi.Infrastructure.Services
 {
-    public class PdfService : IPdfService
+    public class PdfService : OrcaIzi.Domain.Interfaces.IPdfService
     {
         public PdfService()
         {
@@ -97,3 +89,6 @@ namespace OrcaIzi.Infrastructure.Services
         }
     }
 }
+
+
+

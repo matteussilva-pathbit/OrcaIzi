@@ -167,7 +167,7 @@
             }
 
             // Success Popup
-            @if (ViewData["AccountCreated"] != null && (bool)ViewData["AccountCreated"])
+            @if (ViewData["AccountCreated"] as bool? == true)
             {
                 <text>
                 Swal.fire({

@@ -2,13 +2,13 @@ namespace OrcaIzi.Domain.Entities
 {
     public class Budget : BaseEntity
     {
-        public string Title { get; private set; }
-        public string Description { get; private set; }
+        public string Title { get; private set; } = string.Empty;
+        public string Description { get; private set; } = string.Empty;
         public Guid CustomerId { get; private set; }
-        public Customer Customer { get; private set; }
+        public Customer Customer { get; private set; } = null!;
 
-        public string UserId { get; private set; }
-        public User User { get; private set; }
+        public string UserId { get; private set; } = string.Empty;
+        public User User { get; private set; } = null!;
         public decimal TotalAmount { get; private set; }
         public BudgetStatus Status { get; private set; }
         public DateTime ExpirationDate { get; private set; }

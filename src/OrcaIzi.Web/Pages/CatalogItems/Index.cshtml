@@ -1,0 +1,132 @@
+@page
+@model OrcaIzi.Web.Pages.CatalogItems.IndexModel
+@{
+    ViewData["Title"] = "Catálogo";
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <div>
+        <h1 class="fw-bold mb-1">Catálogo</h1>
+        <p class="text-muted mb-0">Itens e serviços para reutilizar nos orçamentos</p>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <form method="get" class="d-flex gap-2">
+            <input type="hidden" name="PageNumber" value="1" />
+            <input class="form-control" name="Search" value="@Model.Search" placeholder="Buscar por nome ou categoria..." style="min-width: 280px;" />
+            <button class="btn btn-outline-primary rounded-pill px-4" type="submit">
+                <i class="bi bi-search me-2"></i> Buscar
+            </button>
+        </form>
+        <a asp-page="Create" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-lg me-2"></i> Novo Item
+        </a>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm overflow-hidden">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4 py-3 text-uppercase text-muted small fw-bold border-0">Nome</th>
+                        <th class="py-3 text-uppercase text-muted small fw-bold border-0">Categoria</th>
+                        <th class="py-3 text-uppercase text-muted small fw-bold border-0">Unidade</th>
+                        <th class="py-3 text-uppercase text-muted small fw-bold border-0">Valor</th>
+                        <th class="py-3 text-uppercase text-muted small fw-bold border-0">Status</th>
+                        <th class="pe-4 py-3 text-end text-uppercase text-muted small fw-bold border-0">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.CatalogItems.Items != null && Model.CatalogItems.Items.Any())
+                    {
+                        @foreach (var item in Model.CatalogItems.Items)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-medium text-dark">@item.Name</div>
+                                    @if (!string.IsNullOrWhiteSpace(item.Description))
+                                    {
+                                        <div class="text-muted small text-truncate" style="max-width: 420px;">@item.Description</div>
+                                    }
+                                </td>
+                                <td class="text-muted">@item.Category</td>
+                                <td class="text-muted">@item.Unit</td>
+                                <td class="text-muted">R$ @item.UnitPrice.ToString("N2")</td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge rounded-pill bg-success bg-opacity-10 text-success px-3">Ativo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary px-3">Inativo</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group">
+                                        <a asp-page="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light text-muted" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form method="post" asp-page-handler="Delete" asp-route-id="@item.Id" class="d-inline" onsubmit="return confirm('Excluir este item do catálogo?');">
+                                            <button type="submit" class="btn btn-sm btn-light text-danger" title="Excluir">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="py-5">
+                                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                                        <i class="bi bi-box-seam text-muted fs-2"></i>
+                                    </div>
+                                    <h5 class="text-muted mb-1">Nenhum item encontrado</h5>
+                                    <p class="text-muted small mb-3">Crie itens e serviços para preencher orçamentos mais rápido.</p>
+                                    <a asp-page="Create" class="btn btn-outline-primary btn-sm rounded-pill">
+                                        Adicionar Item
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @if (Model.CatalogItems.TotalCount > Model.PageSize)
+    {
+        <div class="card-footer bg-white border-top-0 py-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item @(Model.CatalogItems.PageNumber == 1 ? "disabled" : "")">
+                        <a class="page-link border-0 text-muted" asp-route-PageNumber="@(Model.CatalogItems.PageNumber - 1)" asp-route-Search="@Model.Search">Anterior</a>
+                    </li>
+
+                    @{
+                        var totalPages = (int)Math.Ceiling((double)Model.CatalogItems.TotalCount / Model.PageSize);
+                        for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.CatalogItems.PageNumber ? "active" : "")">
+                                <a class="page-link border-0 rounded-circle mx-1 @(i == Model.CatalogItems.PageNumber ? "bg-primary text-white" : "text-muted")"
+                                   style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
+                                   asp-route-PageNumber="@i" asp-route-Search="@Model.Search">@i</a>
+                            </li>
+                        }
+                    }
+
+                    <li class="page-item @(Model.CatalogItems.PageNumber == totalPages ? "disabled" : "")">
+                        <a class="page-link border-0 text-muted" asp-route-PageNumber="@(Model.CatalogItems.PageNumber + 1)" asp-route-Search="@Model.Search">Próximo</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
+</div>
+

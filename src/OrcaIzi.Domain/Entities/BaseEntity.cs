@@ -1,6 +1,4 @@
-using System;
-
-namespace OrcaIzi.Domain.Entities
+﻿namespace OrcaIzi.Domain.Entities
 {
     public abstract class BaseEntity
     {
@@ -9,3 +7,5 @@ namespace OrcaIzi.Domain.Entities
         public DateTime? UpdatedAt { get; protected set; }
     }
 }
+
+

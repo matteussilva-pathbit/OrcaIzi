@@ -1,16 +1,4 @@
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Infrastructure.Context;
-using System.Collections.Generic;
-using System.Net.Http.Json;
-using System.Net;
-using Xunit;
-
-namespace OrcaIzi.IntegrationTests
+﻿﻿namespace OrcaIzi.IntegrationTests
 {
     public class AuthIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     {
@@ -94,3 +82,6 @@ namespace OrcaIzi.IntegrationTests
         }
     }
 }
+
+
+

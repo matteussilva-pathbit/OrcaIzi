@@ -2,12 +2,12 @@ namespace OrcaIzi.Domain.Entities
 {
     public class BudgetTemplate : BaseEntity
     {
-        public string Name { get; private set; }
+        public string Name { get; private set; } = string.Empty;
         public string? Description { get; private set; }
         public string? Observations { get; private set; }
 
-        public string UserId { get; private set; }
-        public User User { get; private set; }
+        public string UserId { get; private set; } = string.Empty;
+        public User User { get; private set; } = null!;
 
         private readonly List<BudgetTemplateItem> _items = new();
         public IReadOnlyCollection<BudgetTemplateItem> Items => _items.AsReadOnly();

@@ -1,10 +1,4 @@
-using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
-using OrcaIzi.Application.Interfaces;
-using OrcaIzi.Application.Services;
-using System.Reflection;
-
-namespace OrcaIzi.Application
+﻿﻿namespace OrcaIzi.Application
 {
     public static class DependencyInjection
     {
@@ -13,6 +7,7 @@ namespace OrcaIzi.Application
             services.AddScoped<IBudgetAppService, BudgetAppService>();
             services.AddScoped<IBudgetTemplateAppService, BudgetTemplateAppService>();
             services.AddScoped<ICustomerAppService, CustomerAppService>();
+            services.AddScoped<ICatalogItemAppService, CatalogItemAppService>();
 
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
@@ -20,3 +15,6 @@ namespace OrcaIzi.Application
         }
     }
 }
+
+
+

@@ -1,0 +1,21 @@
+﻿﻿global using FluentAssertions;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.AspNetCore.Mvc.Testing;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection.Extensions;
+global using Microsoft.Extensions.DependencyInjection;
+global using OrcaIzi.Application.DTOs;
+global using OrcaIzi.Application.Interfaces.Services;
+global using OrcaIzi.Domain.Core;
+global using OrcaIzi.Domain.Entities;
+global using OrcaIzi.Infrastructure.Context;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Net.Http.Headers;
+global using System.Net.Http.Json;
+global using System.Net;
+global using System.Threading.Tasks;
+global using System;
+global using Xunit;
+

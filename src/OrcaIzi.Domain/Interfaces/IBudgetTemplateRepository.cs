@@ -1,7 +1,4 @@
-using OrcaIzi.Domain.Core;
-using OrcaIzi.Domain.Entities;
-
-namespace OrcaIzi.Domain.Interfaces
+﻿﻿namespace OrcaIzi.Domain.Interfaces
 {
     public interface IBudgetTemplateRepository : IRepository<BudgetTemplate>
     {
@@ -10,3 +7,6 @@ namespace OrcaIzi.Domain.Interfaces
         Task UpdateWithItemsAsync(BudgetTemplate template);
     }
 }
+
+
+

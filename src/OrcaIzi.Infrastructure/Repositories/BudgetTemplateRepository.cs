@@ -1,8 +1,4 @@
-using OrcaIzi.Domain.Core;
-using OrcaIzi.Domain.Entities;
-using OrcaIzi.Domain.Interfaces;
-
-namespace OrcaIzi.Infrastructure.Repositories
+﻿﻿namespace OrcaIzi.Infrastructure.Repositories
 {
     public class BudgetTemplateRepository : Repository<BudgetTemplate>, IBudgetTemplateRepository
     {
@@ -47,3 +43,6 @@ namespace OrcaIzi.Infrastructure.Repositories
         }
     }
 }
+
+
+

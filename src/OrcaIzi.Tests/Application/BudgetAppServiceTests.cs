@@ -1,14 +1,4 @@
-using FluentAssertions;
-using Moq;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Application.Services;
-using OrcaIzi.Domain.Entities;
-using OrcaIzi.Domain.Interfaces;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-using Xunit;
-
-namespace OrcaIzi.Tests.Application
+﻿﻿namespace OrcaIzi.Tests.Application
 {
     public class BudgetAppServiceTests
     {
@@ -58,7 +48,7 @@ namespace OrcaIzi.Tests.Application
             var customer = new Customer("Test Customer", "test@test.com", "123456789", "123", "Address");
             customer.SetOwner(_userId);
             // Simulate EF Core setting ID
-            typeof(BaseEntity).GetProperty("Id").SetValue(customer, customerId);
+            typeof(BaseEntity).GetProperty("Id")!.SetValue(customer, customerId);
 
             _customerRepositoryMock.Setup(x => x.GetByIdAsync(customerId))
                 .ReturnsAsync(customer);
@@ -125,3 +115,6 @@ namespace OrcaIzi.Tests.Application
         }
     }
 }
+
+
+

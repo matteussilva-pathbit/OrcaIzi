@@ -55,9 +55,14 @@
 
         <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
             <h4 class="mb-0">Itens do Orçamento</h4>
-            <button type="button" id="addItemBtn" class="btn btn-outline-primary btn-sm rounded-pill">
-                <i class="bi bi-plus-lg me-2"></i> Adicionar Item
-            </button>
+            <div class="d-flex gap-2">
+                <button type="button" id="addFromCatalogBtn" class="btn btn-outline-secondary btn-sm rounded-pill">
+                    <i class="bi bi-collection me-2"></i> Do Catálogo
+                </button>
+                <button type="button" id="addItemBtn" class="btn btn-outline-primary btn-sm rounded-pill">
+                    <i class="bi bi-plus-lg me-2"></i> Adicionar Item
+                </button>
+            </div>
         </div>
         
         <div id="budget-items">
@@ -97,6 +102,42 @@
             <button type="submit" class="btn btn-primary btn-lg">SALVAR ORÇAMENTO</button>
         </div>
     </form>
+    </div>
+</div>
+
+<div class="modal fade" id="catalogModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Adicionar do Catálogo</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input id="catalogSearchInput" class="form-control" placeholder="Buscar por nome ou categoria..." style="background-color: #000 !important; color: #fff !important;" />
+                    <button type="button" id="catalogSearchBtn" class="btn btn-outline-primary">Buscar</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th class="text-end">Valor</th>
+                                <th class="text-end">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="catalogResultsBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <a asp-page="/CatalogItems/Index" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill">Gerenciar Catálogo</a>
+                    <div class="small text-muted" id="catalogResultsInfo"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -149,7 +190,8 @@
 
             let itemIndex = @Model.Budget.Items.Count;
 
-            function addItemRow() {
+            function addItemRow(initial) {
+                const currentIndex = itemIndex;
                 const template = `
                 <div class="card mb-3 budget-item bg-dark border-secondary">
                     <div class="card-body">
@@ -159,21 +201,21 @@
                         <div class="row">
                             <div class="col-md-4 mb-2">
                                 <label class="form-label text-white">Item</label>
-                                <input name="Budget.Items[${itemIndex}].Name" class="form-control" placeholder="Nome do Item" required style="background-color: #000 !important; color: #fff !important;" />
-                                <span class="text-danger field-validation-valid" data-valmsg-for="Budget.Items[${itemIndex}].Name" data-valmsg-replace="true"></span>
+                                <input name="Budget.Items[${currentIndex}].Name" class="form-control" placeholder="Nome do Item" required style="background-color: #000 !important; color: #fff !important;" />
+                                <span class="text-danger field-validation-valid" data-valmsg-for="Budget.Items[${currentIndex}].Name" data-valmsg-replace="true"></span>
                             </div>
                             <div class="col-md-4 mb-2">
                                 <label class="form-label text-white">Descrição</label>
-                                <input name="Budget.Items[${itemIndex}].Description" class="form-control" placeholder="Descrição opcional" style="background-color: #000 !important; color: #fff !important;" />
+                                <input name="Budget.Items[${currentIndex}].Description" class="form-control" placeholder="Descrição opcional" style="background-color: #000 !important; color: #fff !important;" />
                             </div>
                             <div class="col-md-2 mb-2">
                                 <label class="form-label text-white">Qtd</label>
-                                <input type="number" name="Budget.Items[${itemIndex}].Quantity" class="form-control item-quantity" value="1" min="1" required style="background-color: #000 !important; color: #fff !important;" />
+                                <input type="number" name="Budget.Items[${currentIndex}].Quantity" class="form-control item-quantity" value="1" min="1" required style="background-color: #000 !important; color: #fff !important;" />
                             </div>
                             <div class="col-md-2 mb-2">
                                 <label class="form-label text-white">Valor Unit.</label>
-                                <input type="text" name="Budget.Items[${itemIndex}].UnitPrice" class="form-control item-price money" value="0,00" required style="background-color: #000 !important; color: #fff !important;" />
-                                <span class="text-danger field-validation-valid" data-valmsg-for="Budget.Items[${itemIndex}].UnitPrice" data-valmsg-replace="true"></span>
+                                <input type="text" name="Budget.Items[${currentIndex}].UnitPrice" class="form-control item-price money" value="0,00" required style="background-color: #000 !important; color: #fff !important;" />
+                                <span class="text-danger field-validation-valid" data-valmsg-for="Budget.Items[${currentIndex}].UnitPrice" data-valmsg-replace="true"></span>
                             </div>
                         </div>
                     </div>
@@ -181,11 +223,93 @@
                 
                 $('#budget-items').append(template);
                 $('.money').mask('000.000.000.000.000,00', {reverse: true});
+
+                if (initial) {
+                    const name = initial.name ?? initial.Name ?? '';
+                    const description = initial.description ?? initial.Description ?? '';
+                    const unitPrice = initial.unitPrice ?? initial.UnitPrice ?? 0;
+
+                    $(`input[name="Budget.Items[${currentIndex}].Name"]`).val(name);
+                    $(`input[name="Budget.Items[${currentIndex}].Description"]`).val(description);
+                    $(`input[name="Budget.Items[${currentIndex}].UnitPrice"]`).val(Number(unitPrice).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                }
+
                 itemIndex++;
             }
 
             $('#addItemBtn').click(function () {
                 addItemRow();
+            });
+
+            const catalogModalEl = document.getElementById('catalogModal');
+            const catalogModal = new bootstrap.Modal(catalogModalEl);
+            const catalogUrl = '@Url.Page(null, "CatalogItems")';
+
+            function renderCatalog(items) {
+                const $tbody = $('#catalogResultsBody');
+                $tbody.empty();
+
+                if (!items || items.length === 0) {
+                    $tbody.append(`<tr><td colspan="4" class="text-center text-muted py-4">Nenhum item encontrado</td></tr>`);
+                    return;
+                }
+
+                for (const it of items) {
+                    const id = it.id ?? it.Id;
+                    const name = it.name ?? it.Name ?? '';
+                    const category = it.category ?? it.Category ?? '';
+                    const unitPrice = it.unitPrice ?? it.UnitPrice ?? 0;
+                    const priceText = Number(unitPrice).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                    const row = `
+                        <tr>
+                            <td>${$('<div>').text(name).html()}</td>
+                            <td class="text-muted">${$('<div>').text(category).html()}</td>
+                            <td class="text-end">R$ ${priceText}</td>
+                            <td class="text-end">
+                                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill catalog-add" data-id="${id}">Adicionar</button>
+                            </td>
+                        </tr>`;
+                    $tbody.append(row);
+                }
+            }
+
+            async function loadCatalog() {
+                const q = $('#catalogSearchInput').val() || '';
+                $('#catalogResultsInfo').text('Carregando...');
+                const res = await fetch(`${catalogUrl}&q=${encodeURIComponent(q)}`);
+                const json = await res.json();
+                const items = json.items ?? json.Items ?? [];
+                renderCatalog(items);
+                $('#catalogResultsInfo').text(`${items.length} item(ns)`);
+            }
+
+            $('#addFromCatalogBtn').click(async function () {
+                $('#catalogSearchInput').val('');
+                await loadCatalog();
+                catalogModal.show();
+            });
+
+            $('#catalogSearchBtn').click(async function () {
+                await loadCatalog();
+            });
+
+            $('#catalogSearchInput').on('input', function () {
+                clearTimeout(window.__catalogTimer);
+                window.__catalogTimer = setTimeout(loadCatalog, 250);
+            });
+
+            $(document).on('click', '.catalog-add', async function () {
+                const id = $(this).data('id');
+                const q = $('#catalogSearchInput').val() || '';
+                const res = await fetch(`${catalogUrl}&q=${encodeURIComponent(q)}`);
+                const json = await res.json();
+                const items = json.items ?? json.Items ?? [];
+                const selected = items.find(x => (x.id ?? x.Id) === id);
+                if (selected) {
+                    addItemRow(selected);
+                    catalogModal.hide();
+                }
             });
 
             $(document).on('click', '.remove-item', function () {

@@ -1,13 +1,4 @@
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Domain.Core;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using Xunit;
-
-namespace OrcaIzi.IntegrationTests
+﻿﻿namespace OrcaIzi.IntegrationTests
 {
     public class BudgetControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
@@ -166,3 +157,6 @@ namespace OrcaIzi.IntegrationTests
         }
     }
 }
+
+
+

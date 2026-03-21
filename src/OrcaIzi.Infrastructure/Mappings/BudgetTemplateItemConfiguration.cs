@@ -1,8 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OrcaIzi.Domain.Entities;
-
-namespace OrcaIzi.Infrastructure.Mappings
+﻿﻿namespace OrcaIzi.Infrastructure.Mappings
 {
     public class BudgetTemplateItemConfiguration : IEntityTypeConfiguration<BudgetTemplateItem>
     {
@@ -17,3 +13,6 @@ namespace OrcaIzi.Infrastructure.Mappings
         }
     }
 }
+
+
+

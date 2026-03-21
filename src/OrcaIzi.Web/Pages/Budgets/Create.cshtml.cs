@@ -1,11 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Web.Interfaces;
-
-namespace OrcaIzi.Web.Pages.Budgets
+﻿﻿namespace OrcaIzi.Web.Pages.Budgets
 {
     [Authorize]
     public class CreateModel : PageModel
@@ -31,6 +24,12 @@ namespace OrcaIzi.Web.Pages.Budgets
             Budget.Items.Add(new CreateBudgetItemDto());
             
             return Page();
+        }
+
+        public async Task<IActionResult> OnGetCatalogItemsAsync(string? q, int pageNumber = 1, int pageSize = 20)
+        {
+            var result = await _apiService.GetCatalogItemsAsync(pageNumber, pageSize, q, true);
+            return new JsonResult(new { items = result?.Items ?? Enumerable.Empty<CatalogItemDto>() });
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -72,3 +71,6 @@ namespace OrcaIzi.Web.Pages.Budgets
         }
     }
 }
+
+
+

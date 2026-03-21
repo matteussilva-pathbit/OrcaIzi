@@ -1,16 +1,14 @@
-using System;
-
-namespace OrcaIzi.Domain.Entities
+﻿﻿namespace OrcaIzi.Domain.Entities
 {
     public class BudgetItem : BaseEntity
     {
-        public string Name { get; private set; }
+        public string Name { get; private set; } = string.Empty;
         public string? Description { get; private set; }
         public int Quantity { get; private set; }
         public decimal UnitPrice { get; private set; }
         public decimal TotalPrice { get; private set; }
         public Guid BudgetId { get; private set; }
-        public Budget Budget { get; private set; }
+        public Budget Budget { get; private set; } = null!;
 
         protected BudgetItem() { } // EF Core
 
@@ -40,3 +38,5 @@ namespace OrcaIzi.Domain.Entities
         }
     }
 }
+
+

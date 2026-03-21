@@ -1,7 +1,4 @@
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Domain.Core;
-
-namespace OrcaIzi.Web.Interfaces
+﻿﻿namespace OrcaIzi.Web.Interfaces
 {
     public interface IApiService
     {
@@ -36,6 +33,13 @@ namespace OrcaIzi.Web.Interfaces
         Task<CustomerDto?> UpdateCustomerAsync(Guid id, CreateCustomerDto customerDto);
         Task<bool> DeleteCustomerAsync(Guid id);
 
+        // Catalog Operations
+        Task<PagedResult<CatalogItemDto>?> GetCatalogItemsAsync(int pageNumber, int pageSize, string? search, bool onlyActive);
+        Task<CatalogItemDto?> GetCatalogItemByIdAsync(Guid id);
+        Task<CatalogItemDto?> CreateCatalogItemAsync(CreateCatalogItemDto dto);
+        Task<CatalogItemDto?> UpdateCatalogItemAsync(Guid id, CreateCatalogItemDto dto);
+        Task<bool> DeleteCatalogItemAsync(Guid id);
+
         // Profile Operations
         Task<UserDto?> GetProfileAsync();
         Task<bool> UpdateProfileAsync(UpdateProfileDto profileDto);
@@ -54,3 +58,6 @@ namespace OrcaIzi.Web.Interfaces
         Task<BudgetDto?> CreateBudgetFromTemplateAsync(Guid templateId, CreateBudgetFromTemplateDto dto);
     }
 }
+
+
+

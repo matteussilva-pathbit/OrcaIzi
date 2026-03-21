@@ -1,12 +1,4 @@
-using Microsoft.AspNetCore.Http;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Application.Interfaces;
-using OrcaIzi.Domain.Core;
-using OrcaIzi.Domain.Entities;
-using OrcaIzi.Domain.Interfaces;
-using System.Security.Claims;
-
-namespace OrcaIzi.Application.Services
+﻿﻿namespace OrcaIzi.Application.Services
 {
     public class BudgetTemplateAppService : IBudgetTemplateAppService
     {
@@ -140,6 +132,7 @@ namespace OrcaIzi.Application.Services
             await _budgetRepository.SaveChangesAsync();
 
             var created = await _budgetRepository.GetWithItemsAndCustomerAsync(budget.Id);
+            if (created == null) throw new Exception("Erro ao recarregar orçamento criado pelo template.");
             return MapBudgetToDto(created);
         }
 
@@ -185,7 +178,7 @@ namespace OrcaIzi.Application.Services
                 Title = budget.Title,
                 Description = budget.Description,
                 CustomerId = budget.CustomerId,
-                CustomerName = budget.Customer?.Name,
+                CustomerName = budget.Customer?.Name ?? string.Empty,
                 CustomerEmail = budget.Customer?.Email,
                 CustomerPhone = budget.Customer?.Phone,
                 CustomerDocument = budget.Customer?.Document,
@@ -200,3 +193,6 @@ namespace OrcaIzi.Application.Services
         }
     }
 }
+
+
+

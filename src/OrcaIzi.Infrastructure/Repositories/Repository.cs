@@ -1,6 +1,4 @@
-using OrcaIzi.Domain.Core;
-
-namespace OrcaIzi.Infrastructure.Repositories
+﻿﻿namespace OrcaIzi.Infrastructure.Repositories
 {
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {
@@ -49,7 +47,7 @@ namespace OrcaIzi.Infrastructure.Repositories
             };
         }
 
-        public virtual async Task<T> GetByIdAsync(Guid id)
+        public virtual async Task<T?> GetByIdAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }
@@ -66,3 +64,5 @@ namespace OrcaIzi.Infrastructure.Repositories
         }
     }
 }
+
+

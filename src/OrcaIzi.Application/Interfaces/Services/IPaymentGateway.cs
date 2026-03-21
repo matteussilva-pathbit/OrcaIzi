@@ -1,7 +1,4 @@
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Domain.Entities;
-
-namespace OrcaIzi.Application.Interfaces.Services
+﻿﻿namespace OrcaIzi.Application.Interfaces.Services
 {
     public interface IPaymentGateway
     {
@@ -9,3 +6,6 @@ namespace OrcaIzi.Application.Interfaces.Services
         Task<PixPaymentDto> GetPaymentAsync(string externalPaymentId);
     }
 }
+
+
+

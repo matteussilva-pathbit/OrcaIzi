@@ -1,11 +1,4 @@
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
-using OrcaIzi.Application.DTOs;
-using System.Net;
-using System.Net.Http.Json;
-using Xunit;
-
-namespace OrcaIzi.IntegrationTests
+﻿﻿namespace OrcaIzi.IntegrationTests
 {
     public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
@@ -70,3 +63,6 @@ namespace OrcaIzi.IntegrationTests
         }
     }
 }
+
+
+

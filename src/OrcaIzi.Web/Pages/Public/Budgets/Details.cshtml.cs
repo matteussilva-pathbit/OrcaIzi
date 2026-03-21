@@ -1,9 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Web.Interfaces;
-
-namespace OrcaIzi.Web.Pages.Public.Budgets
+﻿﻿namespace OrcaIzi.Web.Pages.Public.Budgets
 {
     public class DetailsModel : PageModel
     {
@@ -58,4 +53,7 @@ namespace OrcaIzi.Web.Pages.Public.Budgets
         }
     }
 }
+
+
+
 

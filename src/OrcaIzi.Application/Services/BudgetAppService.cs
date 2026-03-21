@@ -1,10 +1,4 @@
-using OrcaIzi.Domain.Core;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-using OrcaIzi.Application.Interfaces.Services;
-using OrcaIzi.Domain.Interfaces;
-
-namespace OrcaIzi.Application.Services
+﻿﻿namespace OrcaIzi.Application.Services
 {
     public class BudgetAppService : IBudgetAppService
     {
@@ -33,16 +27,18 @@ namespace OrcaIzi.Application.Services
 
         private string GetUserId()
         {
-            return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new Exception("Usuário não autenticado ou ID inválido.");
+            }
+
+            return userId;
         }
 
         public async Task<BudgetDto> CreateAsync(CreateBudgetDto budgetDto)
         {
             var userId = GetUserId();
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new Exception("Usuário não autenticado ou ID inválido.");
-            }
 
             var customer = await _customerRepository.GetByIdAsync(budgetDto.CustomerId);
             if (customer == null || customer.UserId != userId) throw new Exception("Cliente não encontrado ou você não tem permissão.");
@@ -73,16 +69,13 @@ namespace OrcaIzi.Application.Services
             }
 
             var created = await _budgetRepository.GetWithItemsAndCustomerAsync(budget.Id);
+            if (created == null) throw new Exception("Erro ao recarregar orçamento criado.");
             return MapToDto(created);
         }
 
         public async Task<BudgetDto> UpdateAsync(Guid id, CreateBudgetDto budgetDto)
         {
             var userId = GetUserId();
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new Exception("Usuário não autenticado ou ID inválido.");
-            }
 
             var budget = await _budgetRepository.GetWithItemsAndCustomerAsync(id);
             if (budget == null || budget.UserId != userId) throw new Exception("Orçamento não encontrado ou você não tem permissão.");
@@ -130,16 +123,13 @@ namespace OrcaIzi.Application.Services
             // Force reload to ensure we return the latest state (especially if Customer changed)
             // and to avoid any tracking issues with the response mapping
             var updatedBudget = await _budgetRepository.GetWithItemsAndCustomerAsync(id);
+            if (updatedBudget == null) throw new Exception("Erro ao recarregar orçamento atualizado.");
             return MapToDto(updatedBudget);
         }
 
         public async Task<BudgetDto> DuplicateAsync(Guid id)
         {
             var userId = GetUserId();
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new Exception("Usuário não autenticado ou ID inválido.");
-            }
 
             var source = await _budgetRepository.GetWithItemsAndCustomerAsync(id);
             if (source == null || source.UserId != userId) throw new Exception("Orçamento não encontrado ou você não tem permissão.");
@@ -172,6 +162,7 @@ namespace OrcaIzi.Application.Services
             }
 
             var created = await _budgetRepository.GetWithItemsAndCustomerAsync(duplicated.Id);
+            if (created == null) throw new Exception("Erro ao recarregar orçamento duplicado.");
             return MapToDto(created);
         }
 
@@ -355,7 +346,7 @@ namespace OrcaIzi.Application.Services
         {
             var userId = GetUserId();
             var budget = await _budgetRepository.GetWithItemsAndCustomerAsync(id);
-            if (budget == null || budget.UserId != userId) return null;
+            if (budget == null || budget.UserId != userId) throw new Exception("Orçamento não encontrado ou você não tem permissão.");
 
             return MapToDto(budget);
         }
@@ -383,7 +374,7 @@ namespace OrcaIzi.Application.Services
                 Title = budget.Title,
                 Description = budget.Description,
                 CustomerId = budget.CustomerId,
-                CustomerName = budget.Customer?.Name,
+                CustomerName = budget.Customer?.Name ?? string.Empty,
                 CustomerEmail = budget.Customer?.Email,
                 CustomerPhone = budget.Customer?.Phone,
                 CustomerDocument = budget.Customer?.Document,
@@ -462,3 +453,6 @@ namespace OrcaIzi.Application.Services
         }
     }
 }
+
+
+

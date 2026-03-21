@@ -1,10 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Web.Interfaces;
-
-namespace OrcaIzi.Web.Pages.BudgetTemplates
+﻿﻿namespace OrcaIzi.Web.Pages.BudgetTemplates
 {
     [Authorize]
     public class CreateModel : PageModel
@@ -46,4 +40,7 @@ namespace OrcaIzi.Web.Pages.BudgetTemplates
         }
     }
 }
+
+
+
 

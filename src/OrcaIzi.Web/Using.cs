@@ -1,0 +1,22 @@
+﻿﻿global using Microsoft.AspNetCore.Authentication.Cookies;
+global using Microsoft.AspNetCore.Authentication;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Localization;
+global using Microsoft.AspNetCore.Mvc.RazorPages;
+global using Microsoft.AspNetCore.Mvc.Rendering;
+global using Microsoft.AspNetCore.Mvc;
+global using OrcaIzi.Application.DTOs;
+global using OrcaIzi.Domain.Core;
+global using OrcaIzi.Web.Interfaces;
+global using OrcaIzi.Web.Services;
+global using System.Collections.Generic;
+global using System.ComponentModel.DataAnnotations;
+global using System.Diagnostics;
+global using System.Globalization;
+global using System.Linq;
+global using System.Net.Http.Headers;
+global using System.Security.Claims;
+global using System.Text.Json;
+global using System.Threading.Tasks;
+global using System;
+

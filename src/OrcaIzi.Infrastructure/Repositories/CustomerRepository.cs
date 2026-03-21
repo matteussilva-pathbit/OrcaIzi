@@ -1,12 +1,10 @@
-using OrcaIzi.Domain.Core;
-
-namespace OrcaIzi.Infrastructure.Repositories
+﻿﻿namespace OrcaIzi.Infrastructure.Repositories
 {
     public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
         public CustomerRepository(OrcaIziDbContext context) : base(context) { }
 
-        public async Task<Customer> GetByEmailAsync(string email)
+        public async Task<Customer?> GetByEmailAsync(string email)
         {
             return await _dbSet.FirstOrDefaultAsync(x => x.Email == email);
         }
@@ -46,3 +44,5 @@ namespace OrcaIzi.Infrastructure.Repositories
         }
     }
 }
+
+

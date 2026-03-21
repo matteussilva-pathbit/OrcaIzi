@@ -1,14 +1,4 @@
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Moq;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Application.Services;
-using OrcaIzi.Domain.Entities;
-using OrcaIzi.Domain.Interfaces;
-using System.Security.Claims;
-using Xunit;
-
-namespace OrcaIzi.Tests.Application
+﻿﻿namespace OrcaIzi.Tests.Application
 {
     public class BudgetTemplateAppServiceTests
     {
@@ -124,4 +114,7 @@ namespace OrcaIzi.Tests.Application
         }
     }
 }
+
+
+
 

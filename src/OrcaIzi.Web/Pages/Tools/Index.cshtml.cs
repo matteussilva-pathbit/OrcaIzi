@@ -1,11 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Web.Interfaces;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Threading.Tasks;
-
 namespace OrcaIzi.Web.Pages.Tools
 {
     public class IndexModel : PageModel
@@ -21,12 +13,12 @@ namespace OrcaIzi.Web.Pages.Tools
         public string SearchType { get; set; } = "CNPJ";
 
         [BindProperty(SupportsGet = true)]
-        public string SearchValue { get; set; }
+        public string SearchValue { get; set; } = string.Empty;
 
-        public CnpjResultDto CnpjResult { get; set; }
-        public CepResultDto CepResult { get; set; }
-        public CpfResultDto CpfResult { get; set; }
-        public string ErrorMessage { get; set; }
+        public CnpjResultDto? CnpjResult { get; set; }
+        public CepResultDto? CepResult { get; set; }
+        public CpfResultDto? CpfResult { get; set; }
+        public string? ErrorMessage { get; set; }
 
         public List<SearchHistoryItem> SearchHistory { get; set; } = new List<SearchHistoryItem>();
 
@@ -70,7 +62,7 @@ namespace OrcaIzi.Web.Pages.Tools
             {
                 try
                 {
-                    SearchHistory = JsonSerializer.Deserialize<List<SearchHistoryItem>>(cookie);
+                    SearchHistory = JsonSerializer.Deserialize<List<SearchHistoryItem>>(cookie) ?? new List<SearchHistoryItem>();
                 }
                 catch { }
             }
@@ -89,10 +81,12 @@ namespace OrcaIzi.Web.Pages.Tools
 
         public class SearchHistoryItem
         {
-            public string Type { get; set; }
-            public string Value { get; set; }
-            public string Description { get; set; }
+            public string Type { get; set; } = string.Empty;
+            public string Value { get; set; } = string.Empty;
+            public string Description { get; set; } = string.Empty;
             public System.DateTime Date { get; set; }
         }
     }
 }
+
+

@@ -1,7 +1,3 @@
-using OrcaIzi.Domain.Core;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-
 namespace OrcaIzi.Application.Services
 {
     public class CustomerAppService : ICustomerAppService
@@ -17,7 +13,13 @@ namespace OrcaIzi.Application.Services
 
         private string GetUserId()
         {
-            return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new Exception("Usuário não autenticado ou ID inválido.");
+            }
+
+            return userId;
         }
 
         public async Task<CustomerDto> CreateAsync(CreateCustomerDto customerDto)
@@ -74,7 +76,7 @@ namespace OrcaIzi.Application.Services
         {
             var userId = GetUserId();
             var customer = await _customerRepository.GetByIdAsync(id);
-            if (customer == null || customer.UserId != userId) return null;
+            if (customer == null || customer.UserId != userId) throw new Exception("Cliente não encontrado ou você não tem permissão.");
 
             return MapToDto(customer);
         }
@@ -119,3 +121,5 @@ namespace OrcaIzi.Application.Services
         }
     }
 }
+
+

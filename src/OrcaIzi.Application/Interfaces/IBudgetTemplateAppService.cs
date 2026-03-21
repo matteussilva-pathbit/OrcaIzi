@@ -1,6 +1,4 @@
-using OrcaIzi.Domain.Core;
-
-namespace OrcaIzi.Application.Interfaces
+﻿﻿namespace OrcaIzi.Application.Interfaces
 {
     public interface IBudgetTemplateAppService
     {
@@ -12,3 +10,5 @@ namespace OrcaIzi.Application.Interfaces
         Task<BudgetDto> CreateBudgetFromTemplateAsync(Guid templateId, CreateBudgetFromTemplateDto dto);
     }
 }
+
+

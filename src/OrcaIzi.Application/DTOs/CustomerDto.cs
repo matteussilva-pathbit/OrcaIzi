@@ -1,7 +1,4 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace OrcaIzi.Application.DTOs
+﻿namespace OrcaIzi.Application.DTOs
 {
     public class CustomerDto
     {
@@ -33,3 +30,5 @@ namespace OrcaIzi.Application.DTOs
         public string? ProfilePictureUrl { get; set; }
     }
 }
+
+

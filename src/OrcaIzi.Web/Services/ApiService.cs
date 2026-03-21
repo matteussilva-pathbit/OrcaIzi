@@ -1,9 +1,4 @@
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Domain.Core;
-using OrcaIzi.Web.Interfaces;
-using System.Net.Http.Headers;
-
-namespace OrcaIzi.Web.Services
+﻿﻿namespace OrcaIzi.Web.Services
 {
     public class ApiService : IApiService
     {
@@ -372,6 +367,67 @@ namespace OrcaIzi.Web.Services
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<PagedResult<CatalogItemDto>?> GetCatalogItemsAsync(int pageNumber, int pageSize, string? search, bool onlyActive)
+        {
+            AddAuthorizationHeader();
+            var url = $"api/CatalogItems?pageNumber={pageNumber}&pageSize={pageSize}&onlyActive={onlyActive}";
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                url += $"&search={Uri.EscapeDataString(search)}";
+            }
+
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<PagedResult<CatalogItemDto>>();
+            }
+            return null;
+        }
+
+        public async Task<CatalogItemDto?> GetCatalogItemByIdAsync(Guid id)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.GetAsync($"api/CatalogItems/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<CatalogItemDto>();
+            }
+            return null;
+        }
+
+        public async Task<CatalogItemDto?> CreateCatalogItemAsync(CreateCatalogItemDto dto)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.PostAsJsonAsync("api/CatalogItems", dto);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<CatalogItemDto>();
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Erro ao criar item do catálogo ({response.StatusCode}): {GetErrorMessage(errorContent)}");
+        }
+
+        public async Task<CatalogItemDto?> UpdateCatalogItemAsync(Guid id, CreateCatalogItemDto dto)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.PutAsJsonAsync($"api/CatalogItems/{id}", dto);
+            if (response.IsSuccessStatusCode)
+            {
+                return await GetCatalogItemByIdAsync(id);
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Erro ao atualizar item do catálogo ({response.StatusCode}): {GetErrorMessage(errorContent)}");
+        }
+
+        public async Task<bool> DeleteCatalogItemAsync(Guid id)
+        {
+            AddAuthorizationHeader();
+            var response = await _httpClient.DeleteAsync($"api/CatalogItems/{id}");
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<UserDto?> GetProfileAsync()
         {
             AddAuthorizationHeader();
@@ -503,3 +559,6 @@ namespace OrcaIzi.Web.Services
         }
     }
 }
+
+
+

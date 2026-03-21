@@ -1,9 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Web.Interfaces;
-
-namespace OrcaIzi.Web.Pages
+﻿namespace OrcaIzi.Web.Pages
 {
     public class IndexModel : PageModel
     {
@@ -28,3 +23,5 @@ namespace OrcaIzi.Web.Pages
         }
     }
 }
+
+

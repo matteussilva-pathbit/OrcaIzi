@@ -1,6 +1,4 @@
-using FluentValidation;
-
-namespace OrcaIzi.Application.Validators
+﻿namespace OrcaIzi.Application.Validators
 {
     public class CreateBudgetDtoValidator : AbstractValidator<CreateBudgetDto>
     {
@@ -42,3 +40,5 @@ namespace OrcaIzi.Application.Validators
         }
     }
 }
+
+

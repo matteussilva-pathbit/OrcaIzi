@@ -1,10 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Web.Interfaces;
-using System.Threading.Tasks;
-
-namespace OrcaIzi.Web.Pages.Account
+﻿﻿namespace OrcaIzi.Web.Pages.Account
 {
     public class ForgotPasswordModel : PageModel
     {
@@ -16,7 +10,7 @@ namespace OrcaIzi.Web.Pages.Account
         }
 
         [BindProperty]
-        public ForgotPasswordDto Input { get; set; }
+        public ForgotPasswordDto Input { get; set; } = new();
 
         public bool Success { get; set; } = false;
 
@@ -46,3 +40,6 @@ namespace OrcaIzi.Web.Pages.Account
         }
     }
 }
+
+
+

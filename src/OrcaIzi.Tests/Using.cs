@@ -1,0 +1,23 @@
+﻿﻿global using FluentAssertions;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Extensions.Caching.Memory;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.Logging;
+global using Moq;
+global using OrcaIzi.Application.DTOs;
+global using OrcaIzi.Application.Services;
+global using OrcaIzi.Domain.Core;
+global using OrcaIzi.Domain.Entities;
+global using OrcaIzi.Domain.Interfaces;
+global using OrcaIzi.Infrastructure.Services.External;
+global using OrcaIzi.WebAPI.Controllers;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Net;
+global using System.Security.Claims;
+global using System.Threading.Tasks;
+global using System;
+global using Xunit;
+

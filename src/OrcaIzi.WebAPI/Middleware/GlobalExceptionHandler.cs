@@ -1,9 +1,4 @@
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Text.Json;
-
-namespace OrcaIzi.WebAPI.Middleware
+﻿﻿namespace OrcaIzi.WebAPI.Middleware
 {
     public class GlobalExceptionHandler : IExceptionHandler
     {
@@ -58,3 +53,6 @@ namespace OrcaIzi.WebAPI.Middleware
         }
     }
 }
+
+
+

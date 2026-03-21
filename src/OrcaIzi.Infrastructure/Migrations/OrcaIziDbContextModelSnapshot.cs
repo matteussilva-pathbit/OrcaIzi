@@ -369,6 +369,56 @@ namespace OrcaIzi.Infrastructure.Migrations
                     b.ToTable("BudgetTemplateItems", (string)null);
                 });
 
+            modelBuilder.Entity("OrcaIzi.Domain.Entities.CatalogItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Unit")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId", "Name");
+
+                    b.ToTable("CatalogItems", (string)null);
+                });
+
             modelBuilder.Entity("OrcaIzi.Domain.Entities.Customer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -625,6 +675,17 @@ namespace OrcaIzi.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("BudgetTemplate");
+                });
+
+            modelBuilder.Entity("OrcaIzi.Domain.Entities.CatalogItem", b =>
+                {
+                    b.HasOne("OrcaIzi.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OrcaIzi.Domain.Entities.Customer", b =>

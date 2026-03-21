@@ -1,18 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OrcaIzi.WebAPI.Controllers
+﻿﻿namespace OrcaIzi.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -158,8 +144,8 @@ namespace OrcaIzi.WebAPI.Controllers
 
             return Ok(new UserDto
             {
-                Username = user.UserName,
-                Email = user.Email,
+                Username = user.UserName ?? string.Empty,
+                Email = user.Email ?? string.Empty,
                 FullName = user.FullName,
                 CompanyName = user.CompanyName,
                 ProfilePictureUrl = user.ProfilePictureUrl,
@@ -194,3 +180,6 @@ namespace OrcaIzi.WebAPI.Controllers
         }
     }
 }
+
+
+

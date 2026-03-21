@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace OrcaIzi.Application.DTOs
+﻿﻿namespace OrcaIzi.Application.DTOs
 {
     public class BudgetDto
     {
@@ -68,7 +64,7 @@ namespace OrcaIzi.Application.DTOs
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; }
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal TotalPrice { get; set; }
@@ -89,3 +85,6 @@ namespace OrcaIzi.Application.DTOs
         public decimal UnitPrice { get; set; }
     }
 }
+
+
+

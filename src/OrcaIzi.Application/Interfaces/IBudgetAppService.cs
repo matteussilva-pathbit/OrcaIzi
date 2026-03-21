@@ -1,6 +1,4 @@
-using OrcaIzi.Domain.Core;
-
-namespace OrcaIzi.Application.Interfaces
+﻿﻿namespace OrcaIzi.Application.Interfaces
 {
     public interface IBudgetAppService
     {
@@ -25,3 +23,5 @@ namespace OrcaIzi.Application.Interfaces
         Task<DashboardDto> GetDashboardStatsAsync();
     }
 }
+
+

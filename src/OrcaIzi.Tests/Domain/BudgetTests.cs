@@ -1,8 +1,4 @@
-using FluentAssertions;
-using OrcaIzi.Domain.Entities;
-using Xunit;
-
-namespace OrcaIzi.Tests.Domain
+﻿﻿namespace OrcaIzi.Tests.Domain
 {
     public class BudgetTests
     {
@@ -38,3 +34,6 @@ namespace OrcaIzi.Tests.Domain
         }
     }
 }
+
+
+

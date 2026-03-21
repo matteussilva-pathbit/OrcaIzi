@@ -1,16 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using OrcaIzi.Application.Interfaces.Services;
-using OrcaIzi.Domain.Interfaces;
-using OrcaIzi.Infrastructure.Context;
-using OrcaIzi.Infrastructure.Repositories;
-using OrcaIzi.Infrastructure.Services.External;
-using OrcaIzi.Infrastructure.Services.Pdf;
-using OrcaIzi.Infrastructure.Services;
-using OrcaIzi.Infrastructure.Services.Payments;
-
-namespace OrcaIzi.Infrastructure
+﻿﻿namespace OrcaIzi.Infrastructure
 {
     public static class DependencyInjection
     {
@@ -34,6 +22,7 @@ namespace OrcaIzi.Infrastructure
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<ICatalogItemRepository, CatalogItemRepository>();
             services.AddScoped<IBudgetRepository, BudgetRepository>();
             services.AddScoped<IBudgetTemplateRepository, BudgetTemplateRepository>();
             services.AddScoped<OrcaIzi.Application.Interfaces.Services.IPdfService, OrcaIzi.Infrastructure.Services.Pdf.PdfService>();
@@ -51,3 +40,6 @@ namespace OrcaIzi.Infrastructure
         }
     }
 }
+
+
+

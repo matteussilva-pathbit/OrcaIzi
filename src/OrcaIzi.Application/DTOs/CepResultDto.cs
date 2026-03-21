@@ -2,12 +2,12 @@ namespace OrcaIzi.Application.DTOs
 {
     public class CepResultDto
     {
-        public string Cep { get; set; }
-        public string Logradouro { get; set; }
-        public string Complemento { get; set; }
-        public string Bairro { get; set; }
-        public string Localidade { get; set; }
-        public string Uf { get; set; }
+        public string Cep { get; set; } = string.Empty;
+        public string Logradouro { get; set; } = string.Empty;
+        public string Complemento { get; set; } = string.Empty;
+        public string Bairro { get; set; } = string.Empty;
+        public string Localidade { get; set; } = string.Empty;
+        public string Uf { get; set; } = string.Empty;
         public bool Erro { get; set; }
     }
 }

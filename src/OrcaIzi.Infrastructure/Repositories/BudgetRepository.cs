@@ -1,5 +1,3 @@
-using OrcaIzi.Domain.Core;
-
 namespace OrcaIzi.Infrastructure.Repositories
 {
     public class BudgetRepository : Repository<Budget>, IBudgetRepository
@@ -15,7 +13,7 @@ namespace OrcaIzi.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Budget> GetWithItemsAndCustomerAsync(Guid id)
+        public async Task<Budget?> GetWithItemsAndCustomerAsync(Guid id)
         {
             return await _dbSet
                 .Include(x => x.Customer)
@@ -117,3 +115,5 @@ namespace OrcaIzi.Infrastructure.Repositories
         }
     }
 }
+
+

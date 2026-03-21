@@ -1,10 +1,10 @@
-using System.Threading.Tasks;
-using OrcaIzi.Domain.Entities;
-
-namespace OrcaIzi.Domain.Interfaces
+﻿﻿namespace OrcaIzi.Domain.Interfaces
 {
     public interface IWhatsAppService
     {
         string GenerateWhatsAppLink(Budget budget);
     }
 }
+
+
+

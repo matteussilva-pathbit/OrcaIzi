@@ -1,14 +1,4 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using OrcaIzi.Infrastructure.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace OrcaIzi.IntegrationTests
+﻿﻿namespace OrcaIzi.IntegrationTests
 {
     public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
@@ -97,3 +87,6 @@ namespace OrcaIzi.IntegrationTests
         }
     }
 }
+
+
+

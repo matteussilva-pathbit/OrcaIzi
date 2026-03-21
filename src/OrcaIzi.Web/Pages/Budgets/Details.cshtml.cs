@@ -1,9 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Web.Interfaces;
-
 namespace OrcaIzi.Web.Pages.Budgets
 {
     [Authorize]
@@ -16,17 +10,14 @@ namespace OrcaIzi.Web.Pages.Budgets
             _apiService = apiService;
         }
 
-        public BudgetDto? Budget { get; set; }
+        public BudgetDto Budget { get; set; } = null!;
         public PixPaymentDto? Payment { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            Budget = await _apiService.GetBudgetByIdAsync(id);
-
-            if (Budget == null)
-            {
-                return NotFound();
-            }
+            var budget = await _apiService.GetBudgetByIdAsync(id);
+            if (budget == null) return NotFound();
+            Budget = budget;
 
             Payment = await _apiService.GetBudgetPaymentAsync(id);
             return Page();
@@ -136,3 +127,6 @@ namespace OrcaIzi.Web.Pages.Budgets
         }
     }
 }
+
+
+

@@ -1,11 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Web.Interfaces;
-using System.ComponentModel.DataAnnotations;
-
-namespace OrcaIzi.Web.Pages.Account
+﻿namespace OrcaIzi.Web.Pages.Account
 {
     [Authorize]
     public class ProfileModel : PageModel
@@ -123,3 +116,4 @@ namespace OrcaIzi.Web.Pages.Account
         }
     }
 }
+

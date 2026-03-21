@@ -1,11 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Web.Interfaces;
-using System.ComponentModel.DataAnnotations;
-
-namespace OrcaIzi.Web.Pages.Customers
+﻿﻿namespace OrcaIzi.Web.Pages.Customers
 {
     [Authorize]
     public class CreateModel : PageModel
@@ -84,3 +77,6 @@ namespace OrcaIzi.Web.Pages.Customers
         }
     }
 }
+
+
+

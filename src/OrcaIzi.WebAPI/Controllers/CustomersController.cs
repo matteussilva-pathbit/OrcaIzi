@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
-
-namespace OrcaIzi.WebAPI.Controllers
+﻿﻿namespace OrcaIzi.WebAPI.Controllers
 {
     [Authorize]
     [ApiController]
@@ -58,3 +56,5 @@ namespace OrcaIzi.WebAPI.Controllers
         }
     }
 }
+
+

@@ -1,11 +1,4 @@
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Application.Interfaces.Services;
-using QuestPDF.Fluent;
-using QuestPDF.Helpers;
-using QuestPDF.Infrastructure;
-using System.Globalization;
-
-namespace OrcaIzi.Infrastructure.Services.Pdf
+﻿﻿namespace OrcaIzi.Infrastructure.Services.Pdf
 {
     public class PdfService : OrcaIzi.Application.Interfaces.Services.IPdfService
     {
@@ -419,3 +412,6 @@ namespace OrcaIzi.Infrastructure.Services.Pdf
         }
     }
 }
+
+
+

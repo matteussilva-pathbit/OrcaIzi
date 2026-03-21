@@ -1,11 +1,4 @@
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using OrcaIzi.Domain.Entities;
-using OrcaIzi.Domain.Interfaces;
-
-namespace OrcaIzi.Infrastructure.Services
+﻿﻿namespace OrcaIzi.Infrastructure.Services
 {
     public class WhatsAppService : IWhatsAppService
     {
@@ -46,3 +39,6 @@ namespace OrcaIzi.Infrastructure.Services
         }
     }
 }
+
+
+

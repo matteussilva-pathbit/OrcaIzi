@@ -1,10 +1,3 @@
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
-using OrcaIzi.Application.DTOs;
-using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-
 namespace OrcaIzi.Infrastructure.Services.External
 {
     public class ExternalApiService
@@ -155,20 +148,20 @@ namespace OrcaIzi.Infrastructure.Services.External
         // DTO Interno para ReceitaWS
         private class ReceitaWsDto
         {
-            public string Cnpj { get; set; }
-            public string Nome { get; set; }
-            public string Fantasia { get; set; }
-            public string Logradouro { get; set; }
-            public string Numero { get; set; }
-            public string Bairro { get; set; }
-            public string Municipio { get; set; }
-            public string Uf { get; set; }
-            public string Cep { get; set; }
-            public string Telefone { get; set; }
-            public string Email { get; set; }
-            public string Situacao { get; set; }
-            public string Abertura { get; set; }
-            public string Status { get; set; }
+            public string Cnpj { get; set; } = string.Empty;
+            public string Nome { get; set; } = string.Empty;
+            public string Fantasia { get; set; } = string.Empty;
+            public string Logradouro { get; set; } = string.Empty;
+            public string Numero { get; set; } = string.Empty;
+            public string Bairro { get; set; } = string.Empty;
+            public string Municipio { get; set; } = string.Empty;
+            public string Uf { get; set; } = string.Empty;
+            public string Cep { get; set; } = string.Empty;
+            public string Telefone { get; set; } = string.Empty;
+            public string Email { get; set; } = string.Empty;
+            public string Situacao { get; set; } = string.Empty;
+            public string Abertura { get; set; } = string.Empty;
+            public string Status { get; set; } = string.Empty;
         }
 
         public Task<CpfResultDto> ConsultarCpfAsync(string cpf)
@@ -304,3 +297,4 @@ namespace OrcaIzi.Infrastructure.Services.External
         }
     }
 }
+

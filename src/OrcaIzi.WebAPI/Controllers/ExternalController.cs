@@ -1,8 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
-using OrcaIzi.Infrastructure.Services.External;
-
-namespace OrcaIzi.WebAPI.Controllers
+﻿﻿namespace OrcaIzi.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -61,3 +57,6 @@ namespace OrcaIzi.WebAPI.Controllers
         }
     }
 }
+
+
+

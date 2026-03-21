@@ -1,0 +1,82 @@
+@page
+@model OrcaIzi.Web.Pages.CatalogItems.CreateModel
+@{
+    ViewData["Title"] = "Novo Item do Catálogo";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0">Novo Item do Catálogo</h2>
+            <a asp-page="Index" class="btn btn-light rounded-pill px-3 text-muted">
+                <i class="bi bi-x-lg"></i>
+            </a>
+        </div>
+
+        <div class="card shadow-lg border-0 overflow-hidden">
+            <div class="card-body p-5">
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label asp-for="Item.Name" class="form-label text-white">Nome</label>
+                            <input asp-for="Item.Name" class="form-control" style="background-color: #000 !important; color: #fff !important;" />
+                            <span asp-validation-for="Item.Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Item.UnitPrice" class="form-label text-white">Valor Unitário</label>
+                            <input asp-for="Item.UnitPrice" asp-format="{0:N2}" class="form-control money" type="text" style="background-color: #000 !important; color: #fff !important;" />
+                            <span asp-validation-for="Item.UnitPrice" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Item.Category" class="form-label text-white">Categoria</label>
+                            <input asp-for="Item.Category" class="form-control" placeholder="Ex: Mão de obra" style="background-color: #000 !important; color: #fff !important;" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Item.Unit" class="form-label text-white">Unidade</label>
+                            <input asp-for="Item.Unit" class="form-control" placeholder="Ex: un, hora, m²" style="background-color: #000 !important; color: #fff !important;" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Item.Description" class="form-label text-white">Descrição</label>
+                        <textarea asp-for="Item.Description" class="form-control" rows="3" style="background-color: #000 !important; color: #fff !important;"></textarea>
+                    </div>
+
+                    <div class="form-check form-switch mb-4">
+                        <input asp-for="Item.IsActive" class="form-check-input" type="checkbox" />
+                        <label asp-for="Item.IsActive" class="form-check-label text-white">Ativo</label>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">SALVAR ITEM</button>
+                        <a asp-page="Index" class="btn btn-outline-secondary">CANCELAR</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d+)?$/.test(value);
+        }
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(".", "").replace(",", ".");
+            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        }
+
+        $(document).ready(function () {
+            $('.money').mask('000.000.000.000.000,00', {reverse: true});
+        });
+    </script>
+}
+

@@ -1,8 +1,4 @@
-using Microsoft.AspNetCore.Identity;
-using OrcaIzi.Domain.Entities;
-using System.Threading.Tasks;
-
-namespace OrcaIzi.WebAPI.Services
+﻿﻿namespace OrcaIzi.WebAPI.Services
 {
     public class SeedService
     {
@@ -45,3 +41,6 @@ namespace OrcaIzi.WebAPI.Services
         }
     }
 }
+
+
+

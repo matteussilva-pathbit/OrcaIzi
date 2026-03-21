@@ -1,8 +1,4 @@
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using OrcaIzi.Domain.Entities;
-
-namespace OrcaIzi.Infrastructure.Context
+﻿﻿namespace OrcaIzi.Infrastructure.Context
 {
     public class OrcaIziDbContext : IdentityDbContext<User>
     {
@@ -13,6 +9,7 @@ namespace OrcaIzi.Infrastructure.Context
         public DbSet<BudgetItem> BudgetItems { get; set; }
         public DbSet<BudgetTemplate> BudgetTemplates { get; set; }
         public DbSet<BudgetTemplateItem> BudgetTemplateItems { get; set; }
+        public DbSet<CatalogItem> CatalogItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,3 +18,6 @@ namespace OrcaIzi.Infrastructure.Context
         }
     }
 }
+
+
+

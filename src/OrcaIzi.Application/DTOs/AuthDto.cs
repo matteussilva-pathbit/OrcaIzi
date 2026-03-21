@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace OrcaIzi.Application.DTOs
+﻿namespace OrcaIzi.Application.DTOs
 {
     public class RegisterDto
     {
@@ -45,3 +43,5 @@ namespace OrcaIzi.Application.DTOs
         public string? CompanyLogoUrl { get; set; }
     }
 }
+
+

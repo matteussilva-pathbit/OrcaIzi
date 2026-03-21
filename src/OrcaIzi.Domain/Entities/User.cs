@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Identity;
-
-namespace OrcaIzi.Domain.Entities
+﻿namespace OrcaIzi.Domain.Entities
 {
     public class User : IdentityUser
     {
@@ -19,3 +17,5 @@ namespace OrcaIzi.Domain.Entities
         public string? State { get; set; }
     }
 }
+
+

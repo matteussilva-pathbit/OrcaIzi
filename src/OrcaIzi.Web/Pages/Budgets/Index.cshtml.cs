@@ -1,11 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Domain.Core;
-using OrcaIzi.Web.Interfaces;
-
-namespace OrcaIzi.Web.Pages.Budgets
+﻿﻿namespace OrcaIzi.Web.Pages.Budgets
 {
     [Authorize]
     public class IndexModel : PageModel
@@ -85,3 +78,6 @@ namespace OrcaIzi.Web.Pages.Budgets
         }
     }
 }
+
+
+

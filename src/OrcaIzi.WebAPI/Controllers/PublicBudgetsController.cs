@@ -1,9 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Application.Interfaces;
-
-namespace OrcaIzi.WebAPI.Controllers
+﻿﻿namespace OrcaIzi.WebAPI.Controllers
 {
     [AllowAnonymous]
     [ApiController]
@@ -44,4 +39,7 @@ namespace OrcaIzi.WebAPI.Controllers
         }
     }
 }
+
+
+
 

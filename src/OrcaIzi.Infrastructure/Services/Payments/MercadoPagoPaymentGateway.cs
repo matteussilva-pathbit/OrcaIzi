@@ -1,11 +1,4 @@
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Application.Interfaces.Services;
-using OrcaIzi.Domain.Entities;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text.Json;
-
-namespace OrcaIzi.Infrastructure.Services.Payments
+﻿﻿namespace OrcaIzi.Infrastructure.Services.Payments
 {
     public class MercadoPagoPaymentGateway : IPaymentGateway
     {
@@ -129,4 +122,7 @@ namespace OrcaIzi.Infrastructure.Services.Payments
         }
     }
 }
+
+
+
 

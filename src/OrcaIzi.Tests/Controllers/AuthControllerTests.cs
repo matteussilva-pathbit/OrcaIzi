@@ -1,15 +1,4 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Moq;
-using OrcaIzi.Application.DTOs;
-using OrcaIzi.Domain.Entities;
-using OrcaIzi.WebAPI.Controllers;
-using Xunit;
-
-namespace OrcaIzi.Tests.Controllers
+﻿﻿namespace OrcaIzi.Tests.Controllers
 {
     public class AuthControllerTests
     {
@@ -22,11 +11,11 @@ namespace OrcaIzi.Tests.Controllers
         public AuthControllerTests()
         {
             var userStoreMock = new Mock<IUserStore<User>>();
-            _userManagerMock = new Mock<UserManager<User>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            _userManagerMock = new Mock<UserManager<User>>(userStoreMock.Object, null!, null!, null!, null!, null!, null!, null!, null!);
             
             var contextAccessorMock = new Mock<IHttpContextAccessor>();
             var userPrincipalFactoryMock = new Mock<IUserClaimsPrincipalFactory<User>>();
-            _signInManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object, contextAccessorMock.Object, userPrincipalFactoryMock.Object, null, null, null, null);
+            _signInManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object, contextAccessorMock.Object, userPrincipalFactoryMock.Object, null!, null!, null!, null!);
 
             _configurationMock = new Mock<IConfiguration>();
             _configurationMock.Setup(c => c["Jwt:Key"]).Returns("super-secret-key-for-testing-purposes-123");
@@ -75,7 +64,7 @@ namespace OrcaIzi.Tests.Controllers
         public async Task Register_ShouldReturn500_WhenJwtKeyIsMissing()
         {
              // Arrange
-            _configurationMock.Setup(c => c["Jwt:Key"]).Returns((string)null);
+            _configurationMock.Setup(c => c["Jwt:Key"]).Returns((string?)null);
             
             var registerDto = new RegisterDto
             {
@@ -96,3 +85,5 @@ namespace OrcaIzi.Tests.Controllers
         }
     }
 }
+
+
